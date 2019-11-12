@@ -46,14 +46,13 @@ public class Control extends AppCompatActivity {
             go.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
-                    event.setText("LF|RF");
-                    Option.c.PushMsg("LF|RF");
-                    Gear(Dri);
+                    event.setText("F");
+                    Option.c.PushMsg("F");
+
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
-                    event.setText("LN|RN");
-                    Option.c.PushMsg("LN|RN");
-                    Gear(Neu);
+                    event.setText("N");
+                    Option.c.PushMsg("N");
                 }
                 return false;
             });
@@ -61,14 +60,12 @@ public class Control extends AppCompatActivity {
             back.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
-                    event.setText("LB|RB");
-                    Option.c.PushMsg("LB|RB");
-                    Gear(Rev);
+                    event.setText("B");
+                    Option.c.PushMsg("B");
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
-                    event.setText("LN|RN");
-                    Option.c.PushMsg("LN|RN");
-                    Gear(Neu);
+                    event.setText("N");
+                    Option.c.PushMsg("N");
                 }
                 return false;
             });
@@ -76,28 +73,12 @@ public class Control extends AppCompatActivity {
             left.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
-                    if(Gea == Dri){
-                        event.setText("LN|RF");
-                        Option.c.PushMsg("LN|RF");
-                    }
-                    else if(Gea == Rev){
-                        event.setText("LN|RB");
-                        Option.c.PushMsg("LN|RB");
-                    }
-                    else
-                        event.setText("LN|RN");
+                    event.setText("L");
+                    Option.c.PushMsg("L");
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
-                    if(Gea == Dri){
-                        event.setText("LF|RF");
-                        Option.c.PushMsg("LF|RF");
-                    }
-                    else if(Gea == Rev){
-                        event.setText("LB|RB");
-                        Option.c.PushMsg("LB|RB");
-                    }
-                    else
-                        event.setText("LN|RN");
+                    event.setText("N");
+                    Option.c.PushMsg("N");
                 }
                 return false;
             });
@@ -105,28 +86,12 @@ public class Control extends AppCompatActivity {
             right.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
-                    if(Gea == Dri){
-                        event.setText("LF|RN");
-                        Option.c.PushMsg("LF|RN");
-                    }
-                    else if(Gea == Rev){
-                        event.setText("LB|RN");
-                        Option.c.PushMsg("LB|RN");
-                    }
-                    else
-                        event.setText("LN|RN");
+                    event.setText("R");
+                    Option.c.PushMsg("R");
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
-                    if(Gea == Dri){
-                        event.setText("LF|RF");
-                        Option.c.PushMsg("LF|RF");
-                    }
-                    else if(Gea == Rev){
-                        event.setText("LB|RB");
-                        Option.c.PushMsg("LB|RB");
-                    }
-                    else
-                        event.setText("LN|RN");
+                    event.setText("N");
+                    Option.c.PushMsg("N");
                 }
                 return false;
             });

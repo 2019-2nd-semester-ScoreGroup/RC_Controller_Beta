@@ -1,5 +1,7 @@
 package com.example.rc_controller_beta;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,12 +20,12 @@ public class Client {
         new Thread(()->{
             try {
                 sock = new Socket(IP, PORT);
-                Option.connect = true;
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Option.connect = true;
         }).start();
     }
 
@@ -34,6 +36,7 @@ public class Client {
             out.println(msg);                        //서버로 데이터 전송
             out.flush();
         }).start();
+        Log.w("Test", msg);
     }
 
     public void ReadThread(){

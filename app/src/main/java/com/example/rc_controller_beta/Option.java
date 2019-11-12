@@ -18,7 +18,6 @@ public class Option extends AppCompatActivity {
     TextView v1, v2;
     public static Client c = new Client();
     public static String IP = "", PORT = "";
-    public static int Num_Port = 8888;
     public static boolean connect = false;
 
     public void set_ipport(){
@@ -55,10 +54,9 @@ public class Option extends AppCompatActivity {
             }else if(IP.equals("") || PORT.equals(""))
                 Toast.makeText(getApplicationContext(), "잘못된 입력입니다!", Toast.LENGTH_SHORT).show();
             else {
-                Num_Port = Integer.parseInt(PORT);
                 set_ipport();
             }
-            c.connection(IP, Num_Port);
+            c.connection(IP, Integer.parseInt((PORT)));
         });
 
         b2.setOnClickListener(v -> {
