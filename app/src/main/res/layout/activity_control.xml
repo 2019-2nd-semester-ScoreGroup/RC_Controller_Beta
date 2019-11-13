@@ -156,4 +156,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.406" />
 
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="86dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="268dp"
+        android:layout_marginTop="36dp"
+        android:text="Exit"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/speedValue"
+        android:layout_width="170dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="48dp"
+        android:max="100"
+        android:progress="50"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

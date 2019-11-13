@@ -1,5 +1,7 @@
 package com.example.rc_controller_beta;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -35,8 +37,8 @@ public class Client {
                 return;
             out.println(msg);                        //서버로 데이터 전송
             out.flush();
+            Log.i("ju", msg);
         }).start();
-        Log.w("Test", msg);
     }
 
     public void ReadThread(){
@@ -50,6 +52,16 @@ public class Client {
         new Thread(()->{
             try {
                 line = in.readLine();                //Client로부터 데이터를 읽어옴
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void CloseSock(){
+        new Thread(()->{
+            try {
+                sock.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
