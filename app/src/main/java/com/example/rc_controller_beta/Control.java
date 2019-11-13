@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -63,14 +64,14 @@ public class Control extends AppCompatActivity {
                 }
             });
 
-            exit.setOnTouchListener((view, motionEvent) -> {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    event.setText("exit...");
-                    Option.c.PushMsg("E");
-                    if(Option.c.sock != null)
-                        Option.c.CloseSock();
-                }
-                return false;
+            exit.setOnClickListener(v -> {
+                event.setText("exit...");
+                Option.c.PushMsg("E");
+                Option.connect = false;
+                if(Option.c.sock != null)
+                    Option.c.CloseSock();
+                Intent in = new Intent(this, MainActivity.class);
+                startActivity(in);
             });
 
             go.setOnTouchListener((view, motionEvent) -> {

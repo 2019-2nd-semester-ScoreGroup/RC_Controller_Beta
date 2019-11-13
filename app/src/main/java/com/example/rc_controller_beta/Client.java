@@ -24,10 +24,10 @@ public class Client {
                 sock = new Socket(IP, PORT);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
+                Option.connect = true;
             } catch (IOException e) {
-                e.printStackTrace();
+                Option.connect = false;
             }
-            Option.connect = true;
         }).start();
     }
 
@@ -37,7 +37,7 @@ public class Client {
                 return;
             out.println(msg);                        //서버로 데이터 전송
             out.flush();
-            Log.i("ju", msg);
+            Log.i("push", msg);
         }).start();
     }
 
