@@ -12,18 +12,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Option extends AppCompatActivity {
-    Button b1, b2;
-    ImageButton b3;
+    Button b1, b2, b3;
     EditText ip, port;
     TextView v1, v2;
     public static Client c = new Client();
     public static String IP = "", PORT = "";
-    public static int Num_Port = 8888;
     public static boolean connect = false;
 
     public void set_ipport(){
         v1.setText(IP);
         v2.setText(PORT);
+        ip.setText(IP);
+        port.setText(PORT);
     }
 
     public void set_edit(){
@@ -36,7 +36,6 @@ public class Option extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_option);
-
         b1 = findViewById(R.id.ipport_button);
         b2 = findViewById(R.id.developer_button);
         b3 = findViewById(R.id.back_button);
@@ -55,10 +54,9 @@ public class Option extends AppCompatActivity {
             }else if(IP.equals("") || PORT.equals(""))
                 Toast.makeText(getApplicationContext(), "잘못된 입력입니다!", Toast.LENGTH_SHORT).show();
             else {
-                Num_Port = Integer.parseInt(PORT);
                 set_ipport();
             }
-            c.connection(IP, Num_Port);
+            c.connection(IP, Integer.parseInt((PORT)));
         });
 
         b2.setOnClickListener(v -> {
