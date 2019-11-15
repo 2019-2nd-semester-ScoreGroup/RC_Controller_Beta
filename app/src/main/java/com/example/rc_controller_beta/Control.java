@@ -26,6 +26,11 @@ public class Control extends AppCompatActivity {
             time=System.currentTimeMillis();
             Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.",Toast.LENGTH_SHORT).show();
         }else if(System.currentTimeMillis()-time<2000){
+            if(Option.c.sock != null){
+                Option.c.PushMsg("E");
+                Option.connect = false;
+                Option.c.CloseSock();
+            }
             ActivityCompat.finishAffinity(this);
             System.exit(0);
         }
