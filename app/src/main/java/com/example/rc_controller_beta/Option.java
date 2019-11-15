@@ -7,7 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,14 +17,6 @@ public class Option extends AppCompatActivity {
     public static Client c = new Client();
     public static String IP = "", PORT = "";
     public static boolean connect = false;
-
-    @Override
-    public void onDestroy() {
-        c.PushMsg("D");
-        if(c.sock != null)
-            c.CloseSock();
-        super.onDestroy();
-    }
 
     public void set_ipport(){
         v1.setText(IP);

@@ -1,31 +1,34 @@
 package com.example.rc_controller_beta;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Control extends AppCompatActivity {
     Button exit;
     SeekBar speedBar;
     ImageButton go, back, left, right, option;
     TextView net, event, server;
+    private long time= 0;
 
-    @Override
-    public void onDestroy() {
-        Option.c.PushMsg("D");
-        if(Option.c.sock != null)
-            Option.c.CloseSock();
-        super.onDestroy();
+    public void onBackPressed(){
+        if(System.currentTimeMillis()-time>=2000){
+            time=System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.",Toast.LENGTH_SHORT).show();
+        }else if(System.currentTimeMillis()-time<2000){
+            ActivityCompat.finishAffinity(this);
+            System.exit(0);
+        }
     }
 
     @Override
