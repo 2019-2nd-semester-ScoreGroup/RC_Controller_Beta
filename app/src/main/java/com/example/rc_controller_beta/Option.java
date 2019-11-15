@@ -19,6 +19,14 @@ public class Option extends AppCompatActivity {
     public static String IP = "", PORT = "";
     public static boolean connect = false;
 
+    @Override
+    public void onDestroy() {
+        c.PushMsg("D");
+        if(c.sock != null)
+            c.CloseSock();
+        super.onDestroy();
+    }
+
     public void set_ipport(){
         v1.setText(IP);
         v2.setText(PORT);

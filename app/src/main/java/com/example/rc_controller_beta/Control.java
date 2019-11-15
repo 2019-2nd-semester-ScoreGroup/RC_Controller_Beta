@@ -21,6 +21,14 @@ public class Control extends AppCompatActivity {
     TextView net, event, server;
 
     @Override
+    public void onDestroy() {
+        Option.c.PushMsg("D");
+        if(Option.c.sock != null)
+            Option.c.CloseSock();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
