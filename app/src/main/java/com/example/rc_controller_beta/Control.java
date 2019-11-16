@@ -28,8 +28,11 @@ public class Control extends AppCompatActivity {
         }else if(System.currentTimeMillis()-time<2000){
             if(Option.c.sock != null){
                 Option.c.PushMsg("E");
-                Option.connect = false;
                 Option.c.CloseSock();
+            }
+            else{
+                Option.c.ing = false;
+                Option.connect = false;
             }
             ActivityCompat.finishAffinity(this);
             System.exit(0);
@@ -86,10 +89,14 @@ public class Control extends AppCompatActivity {
 
             exit.setOnClickListener(v -> {
                 event.setText("exit...");
-                Option.c.PushMsg("E");
-                Option.connect = false;
-                if(Option.c.sock != null)
+                if(Option.c.sock != null){
+                    Option.c.PushMsg("E");
                     Option.c.CloseSock();
+                }
+                else{
+                    Option.c.ing = false;
+                    Option.connect = false;
+                }
                 Intent in = new Intent(this, MainActivity.class);
                 startActivity(in);
             });
