@@ -1,9 +1,10 @@
 package com.example.rc_controller_beta;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.WindowManager;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Control extends AppCompatActivity {
     Button exit;
@@ -18,13 +20,35 @@ public class Control extends AppCompatActivity {
 
     ImageButton go, back, left, right, option;
     TextView net, event, server;
+    private long time= 0;
+
+    public void onBackPressed(){
+        if(System.currentTimeMillis()-time>=2000){
+            time=System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.",Toast.LENGTH_SHORT).show();
+        }else if(System.currentTimeMillis()-time<2000){
+            if(Option.c.sock != null){
+                Option.c.PushMsg("E");
+                Option.c.CloseSock();
+            }
+            else{
+                Option.c.ing = false;
+                Option.connect = false;
+            }
+            ActivityCompat.finishAffinity(this);
+            System.exit(0);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        setContentView(R.layout.activity_control);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.activity_control_portrait);
+        } else {
+            setContentView(R.layout.activity_control);
+        }
 
         speedBar = (SeekBar)findViewById(R.id.speedValue);
         exit = findViewById(R.id.exitButton);
@@ -60,14 +84,18 @@ public class Control extends AppCompatActivity {
                 }
             });
 
-            exit.setOnTouchListener((view, motionEvent) -> {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    event.setText("exit...");
+            exit.setOnClickListener(v -> {
+                event.setText("exit...");
+                if(Option.c.sock != null){
                     Option.c.PushMsg("E");
-                    if(Option.c.sock != null)
-                        Option.c.CloseSock();
+                    Option.c.CloseSock();
                 }
-                return false;
+                else{
+                    Option.c.ing = false;
+                    Option.connect = false;
+                }
+                Intent in = new Intent(this, MainActivity.class);
+                startActivity(in);
             });
 
             go.setOnTouchListener((view, motionEvent) -> {
