@@ -15,6 +15,7 @@ import android.widget.TextView;
 public class Control extends AppCompatActivity {
     Button exit;
     SeekBar speedBar;
+
     ImageButton go, back, left, right, option;
     TextView net, event, server;
 
@@ -52,12 +53,8 @@ public class Control extends AppCompatActivity {
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
                 {
                     String speed;
-                    if(progress == 100)
-                        speed = "00000100";
-                    else if(progress < 10)
-                        speed = "0000000" + progress;
-                    else
-                        speed = "000000" + progress;
+
+                    speed = Integer.toString(progress);
 
                     Option.c.PushMsg(speed);
                 }
