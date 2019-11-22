@@ -19,6 +19,7 @@ public class Control extends AppCompatActivity {
     SeekBar speedBar;
     ImageButton go, back, left, right, option;
     TextView net, event, server;
+    Client c = Client.getInstance();
     private long time= 0;
 
     public void onBackPressed(){
@@ -26,13 +27,13 @@ public class Control extends AppCompatActivity {
             time=System.currentTimeMillis();
             Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.",Toast.LENGTH_SHORT).show();
         }else if(System.currentTimeMillis()-time<2000){
-            if(Option.c.sock != null){
-                Option.c.PushMsg("E");
-                Option.c.CloseSock();
+            if(c.sock != null){
+                c.PushMsg("E");
+                c.CloseSock();
             }
             else{
-                Option.c.ing = false;
-                Option.connect = false;
+                c.ing = false;
+                Option.connect_false();
             }
             ActivityCompat.finishAffinity(this);
             System.exit(0);
@@ -65,7 +66,7 @@ public class Control extends AppCompatActivity {
             startActivity(in);
         });
 
-        if(Option.connect) {
+        if(Option.get_connect()) {
             net.setText("Network: ON");
 
             speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -83,19 +84,19 @@ public class Control extends AppCompatActivity {
                     else
                         speed = "000000" + progress;
 
-                    Option.c.PushMsg(speed);
+                    c.PushMsg(speed);
                 }
             });
 
             exit.setOnClickListener(v -> {
                 event.setText("exit...");
-                if(Option.c.sock != null){
-                    Option.c.PushMsg("E");
-                    Option.c.CloseSock();
+                if(c.sock != null){
+                    c.PushMsg("E");
+                    c.CloseSock();
                 }
                 else{
-                    Option.c.ing = false;
-                    Option.connect = false;
+                    c.ing = false;
+                    Option.connect_false();
                 }
                 Intent in = new Intent(this, MainActivity.class);
                 startActivity(in);
@@ -105,12 +106,12 @@ public class Control extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
                     event.setText("F");
-                    Option.c.PushMsg("F");
+                    c.PushMsg("F");
 
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
                     event.setText("N");
-                    Option.c.PushMsg("N");
+                    c.PushMsg("N");
                 }
                 return false;
             });
@@ -119,11 +120,11 @@ public class Control extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
                     event.setText("B");
-                    Option.c.PushMsg("B");
+                    c.PushMsg("B");
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
                     event.setText("N");
-                    Option.c.PushMsg("N");
+                    c.PushMsg("N");
                 }
                 return false;
             });
@@ -132,11 +133,11 @@ public class Control extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
                     event.setText("L");
-                    Option.c.PushMsg("L");
+                    c.PushMsg("L");
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
                     event.setText("N");
-                    Option.c.PushMsg("N");
+                    c.PushMsg("N");
                 }
                 return false;
             });
@@ -145,11 +146,11 @@ public class Control extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
                     event.setText("R");
-                    Option.c.PushMsg("R");
+                    c.PushMsg("R");
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
                     event.setText("N");
-                    Option.c.PushMsg("N");
+                    c.PushMsg("N");
                 }
                 return false;
             });
