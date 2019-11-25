@@ -14,18 +14,30 @@ public class Option extends AppCompatActivity {
     Button b1, b2, b3;
     EditText ip, port;
     TextView v1, v2;
-    public static Client c = new Client();
-    public static String IP = "", PORT = "";
-    public static boolean connect = false;
+    Client c = Client.getInstance();
+    private static String IP = "", PORT = "";
+    private static boolean connect = false;
 
-    public void set_ipport(){
+    public static boolean get_connect(){
+        return connect;
+    }
+
+    public static void connect_true(){
+        connect = true;
+    }
+
+    public static void connect_false(){
+        connect = false;
+    }
+
+    private void set_ipport(){
         v1.setText(IP);
         v2.setText(PORT);
         ip.setText(IP);
         port.setText(PORT);
     }
 
-    public void set_edit(){
+    private void set_edit(){
         IP = ip.getText().toString();
         PORT = port.getText().toString();
     }

@@ -11,11 +11,20 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
+    private static Client c;
+    boolean ing = true;
     Socket sock= null;
     BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
     PrintWriter out = null;            //서버로 내보내기 위한 출력 스트림
-    boolean ing = true;
     String line = "ServerMsg";
+
+    private Client(){}
+
+    public static Client getInstance(){
+        if(c == null)
+            c = new Client();
+        return c;
+    }
 
     public void connection(String IP, int PORT){
         new Thread(()->{
@@ -23,10 +32,10 @@ public class Client {
                 sock = new Socket(IP, PORT);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
-                Option.connect = true;
                 ReadThread();
+                Option.connect_true();
             } catch (IOException e) {
-                Option.connect = false;
+                Option.connect_false();
             }
         }).start();
     }
@@ -65,7 +74,7 @@ public class Client {
         new Thread(()->{
             try {
                 ing = false;
-                Option.connect = false;
+                Option.connect_false();
                 sock.close();
             } catch (IOException e) {
                 e.printStackTrace();
