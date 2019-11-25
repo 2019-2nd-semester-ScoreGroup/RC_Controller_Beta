@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -107,8 +108,8 @@ public class Control extends AppCompatActivity {
 
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
-                    event.setText("N");
-                    c.PushMsg("N");
+                    event.setText("B");
+                    c.PushMsg("B");
                 }
                 return false;
             });
@@ -116,38 +117,51 @@ public class Control extends AppCompatActivity {
             back.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
-                    event.setText("B");
-                    c.PushMsg("B");
+                    event.setText("R");
+                    c.PushMsg("R");
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
-                    event.setText("N");
-                    c.PushMsg("N");
+                    event.setText("B");
+                    c.PushMsg("B");
                 }
                 return false;
             });
 
             left.setOnTouchListener((view, motionEvent) -> {
+                Handler buttonHandler = null;
+                ButtonRunnable buttonRunnable = new ButtonRunnable("L");
+
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    // 버튼을 눌렀을 때
-                    event.setText("L");
-                    c.PushMsg("L");
-                }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    // 버튼에서 손을 떼었을 때
-                    event.setText("N");
-                    c.PushMsg("N");
+                    // 버튼을 누르고 있을 때
+                    if(buttonHandler != null)
+                        return true;
+
+                    buttonHandler = new Handler();
+                    buttonHandler.postDelayed(buttonRunnable, 500);
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
+                {
+                    if (buttonHandler == null) return true;
+                    buttonHandler.removeCallbacks(buttonRunnable);
+                    buttonHandler = null;
                 }
                 return false;
             });
 
             right.setOnTouchListener((view, motionEvent) -> {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    // 버튼을 눌렀을 때
-                    event.setText("R");
-                    c.PushMsg("R");
-                }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    // 버튼에서 손을 떼었을 때
-                    event.setText("N");
-                    c.PushMsg("N");
+                Handler buttonHandler = null;
+                ButtonRunnable buttonRunnable = new ButtonRunnable("R");
+
+                if (motionEvent.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
+                    // 버튼을 누르고 있을 때
+                    buttonHandler = new Handler();
+                    buttonHandler.postDelayed(buttonRunnable, 500);
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
+                {
+                    if (buttonHandler == null) return true;
+                    buttonHandler.removeCallbacks(buttonRunnable);
+                    buttonHandler = null;
                 }
                 return false;
             });
@@ -155,4 +169,23 @@ public class Control extends AppCompatActivity {
             net.setText("Network: OFF");
         }
     }
+
+    public class ButtonRunnable implements  Runnable{
+
+        String value;
+
+        ButtonRunnable(String value)
+        {
+            this.value = value;
+        }
+
+        @Override
+        public void run() {
+            event.setText(value);
+            c.PushMsg(value);
+        }
+    }
 }
+
+
+
