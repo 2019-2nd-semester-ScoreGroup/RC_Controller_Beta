@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Client {
@@ -29,7 +30,9 @@ public class Client {
     public void connection(String IP, int PORT){
         new Thread(()->{
             try {
-                sock = new Socket(IP, PORT);
+                InetSocketAddress sock_address = new InetSocketAddress(IP, PORT);
+                sock = new Socket();
+                sock.connect(sock_address, 2000);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
                 ReadThread();
@@ -42,7 +45,7 @@ public class Client {
 
     public void PushMsg(String msg){
         new Thread(()->{
-            if(sock == null)
+            if(sock == null || sock.isClosed())
                 return;
             out.println(msg);                        //서버로 데이터 전송
             out.flush();
@@ -52,8 +55,11 @@ public class Client {
 
     public void ReadThread(){
         new Thread(()->{
-            while(ing)
+            while(ing){
+                if(sock == null || sock.isClosed())
+                    break;
                 ReadMsg();
+            }
         }).start();
     }
 
