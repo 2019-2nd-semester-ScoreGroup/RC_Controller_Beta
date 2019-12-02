@@ -137,7 +137,7 @@ public class Control extends AppCompatActivity {
                         return true;
 
                     buttonHandler = new Handler();
-                    buttonHandler.postDelayed(buttonRunnable, 500);
+                    buttonHandler.postDelayed(buttonRunnable, 1);
                 }
                 else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
                 {
@@ -152,10 +152,10 @@ public class Control extends AppCompatActivity {
                 Handler buttonHandler = null;
                 ButtonRunnable buttonRunnable = new ButtonRunnable("R");
 
-                if (motionEvent.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 누르고 있을 때
                     buttonHandler = new Handler();
-                    buttonHandler.postDelayed(buttonRunnable, 500);
+                    buttonHandler.postDelayed(buttonRunnable, 1);
                 }
                 else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
                 {
