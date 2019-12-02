@@ -3,6 +3,7 @@ package com.example.rc_controller_beta;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Button;
@@ -18,6 +19,22 @@ public class Option extends AppCompatActivity {
     private static String IP = "", PORT = "";
     private static boolean connect = false;
 
+    /**쉐얼드 프리퍼런스 아이피, 패스워드 저장*/
+    private void SaveIPPW(String ip, String port){
+        SharedPreferences pref = getSharedPreferences("temp", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("IP", ip);
+        editor.putString("PORT", port);
+        editor.commit();
+    }
+
+    /**쉐얼드 프리퍼런스 아이피, 패스워드 불러오기*/
+    private void ImportIPPW(){
+        SharedPreferences pref = getSharedPreferences("temp", MODE_PRIVATE);
+        IP = pref.getString("IP", "localhost");
+        PORT = pref.getString("PORT", "8080");
+    }
+
     public static boolean get_connect(){
         return connect;
     }
@@ -31,6 +48,7 @@ public class Option extends AppCompatActivity {
     }
 
     private void set_ipport(){
+        ImportIPPW();
         v1.setText(IP);
         v2.setText(PORT);
         ip.setText(IP);
@@ -58,14 +76,11 @@ public class Option extends AppCompatActivity {
 
         b1.setOnClickListener(v -> {
             set_edit();
-            if(IP.equals("") && PORT.equals("")){
-                IP = "172.30.1.28";
-                PORT = "8888";
-                set_ipport();
-            }else if(IP.equals("") || PORT.equals(""))
+            if(IP.equals("") || PORT.equals(""))
                 Toast.makeText(getApplicationContext(), "잘못된 입력입니다!", Toast.LENGTH_SHORT).show();
             else {
                 set_ipport();
+                SaveIPPW(IP, PORT);
             }
             c.connection(IP, Integer.parseInt((PORT)));
         });

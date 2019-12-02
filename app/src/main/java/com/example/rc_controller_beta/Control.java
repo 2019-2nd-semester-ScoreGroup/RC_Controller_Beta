@@ -6,7 +6,6 @@ import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -127,41 +126,32 @@ public class Control extends AppCompatActivity {
                 return false;
             });
 
+            LR L_Run = new LR("L");
             left.setOnTouchListener((view, motionEvent) -> {
-                Handler buttonHandler = null;
-                ButtonRunnable buttonRunnable = new ButtonRunnable("L");
-
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 누르고 있을 때
-                    if(buttonHandler != null)
-                        return true;
-
-                    buttonHandler = new Handler();
-                    buttonHandler.postDelayed(buttonRunnable, 1);
+                    event.setText("L");
+                    L_Run.ing_true();
+                    new Thread(L_Run).start();
                 }
-                else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
-                {
-                    if (buttonHandler == null) return true;
-                    buttonHandler.removeCallbacks(buttonRunnable);
-                    buttonHandler = null;
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    // 버튼에서 손을 떼었을 때
+                    L_Run.ing_false();
                 }
                 return false;
             });
 
+            LR R_Run = new LR("R");
             right.setOnTouchListener((view, motionEvent) -> {
-                Handler buttonHandler = null;
-                ButtonRunnable buttonRunnable = new ButtonRunnable("R");
-
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 누르고 있을 때
-                    buttonHandler = new Handler();
-                    buttonHandler.postDelayed(buttonRunnable, 1);
+                    event.setText("R");
+                    R_Run.ing_true();
+                    new Thread(R_Run).start();
                 }
-                else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
-                {
-                    if (buttonHandler == null) return true;
-                    buttonHandler.removeCallbacks(buttonRunnable);
-                    buttonHandler = null;
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    // 버튼에서 손을 떼었을 때
+                    R_Run.ing_false();
                 }
                 return false;
             });
@@ -170,22 +160,32 @@ public class Control extends AppCompatActivity {
         }
     }
 
-    public class ButtonRunnable implements  Runnable{
+    public class LR implements Runnable {
+        private String s;
+        private boolean ing = true;
 
-        String value;
+        public LR(String s){
+            this.s = s;
+        }
 
-        ButtonRunnable(String value)
-        {
-            this.value = value;
+        public void ing_true(){
+            ing = true;
+        }
+
+        public void ing_false(){
+            ing = false;
         }
 
         @Override
         public void run() {
-            event.setText(value);
-            c.PushMsg(value);
+            while (ing){
+                c.PushMsg(s);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
-
-
-
