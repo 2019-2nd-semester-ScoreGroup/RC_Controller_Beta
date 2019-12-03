@@ -33,6 +33,7 @@ public class Option extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("temp", MODE_PRIVATE);
         IP = pref.getString("IP", "localhost");
         PORT = pref.getString("PORT", "8080");
+        set_ipport();
     }
 
     public static boolean get_connect(){
@@ -48,7 +49,6 @@ public class Option extends AppCompatActivity {
     }
 
     private void set_ipport(){
-        ImportIPPW();
         v1.setText(IP);
         v2.setText(PORT);
         ip.setText(IP);
@@ -72,7 +72,7 @@ public class Option extends AppCompatActivity {
         port = findViewById(R.id.port_edit);
         v1 = findViewById(R.id.ip_view);
         v2 = findViewById(R.id.port_view);
-        set_ipport();
+        ImportIPPW();
 
         b1.setOnClickListener(v -> {
             set_edit();
