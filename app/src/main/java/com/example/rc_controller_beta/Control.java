@@ -107,8 +107,8 @@ public class Control extends AppCompatActivity {
 
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
-                    event.setText("B");
-                    c.PushMsg("B");
+                    event.setText("N");
+                    c.PushMsg("N");
                 }
                 return false;
             });
@@ -116,12 +116,12 @@ public class Control extends AppCompatActivity {
             back.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
-                    event.setText("R");
-                    c.PushMsg("R");
-                }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    // 버튼에서 손을 떼었을 때
                     event.setText("B");
                     c.PushMsg("B");
+                }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    // 버튼에서 손을 떼었을 때
+                    event.setText("N");
+                    c.PushMsg("N");
                 }
                 return false;
             });
