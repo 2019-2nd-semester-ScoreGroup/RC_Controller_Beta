@@ -181,7 +181,7 @@ public class Control extends AppCompatActivity {
             while (ing){
                 c.PushMsg(s);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
