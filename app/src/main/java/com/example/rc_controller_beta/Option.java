@@ -2,7 +2,6 @@ package com.example.rc_controller_beta;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -12,10 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Option extends AppCompatActivity {
-    Button b1, b2, b3;
-    EditText ip, port;
-    TextView v1, v2;
     Client c = Client.getInstance();
+    private Button b1, b2;
+    private EditText ip, port;
+    private TextView v1, v2;
     private static String IP = "", PORT = "";
     private static boolean connect = false;
 
@@ -67,7 +66,6 @@ public class Option extends AppCompatActivity {
         setContentView(R.layout.activity_option);
         b1 = findViewById(R.id.ipport_button);
         b2 = findViewById(R.id.developer_button);
-        b3 = findViewById(R.id.back_button);
         ip = findViewById(R.id.ip_edit);
         port = findViewById(R.id.port_edit);
         v1 = findViewById(R.id.ip_view);
@@ -93,11 +91,6 @@ public class Option extends AppCompatActivity {
                 connect = false;
                 Toast.makeText(getApplicationContext(), "Connection = OFF", Toast.LENGTH_SHORT).show();
             }
-        });
-
-        b3.setOnClickListener(v -> {
-            Intent in = new Intent(getApplicationContext(), Control.class);
-            startActivity(in);
         });
     }
 }

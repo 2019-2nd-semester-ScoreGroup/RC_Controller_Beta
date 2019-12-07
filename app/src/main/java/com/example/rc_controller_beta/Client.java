@@ -13,11 +13,10 @@ import java.net.Socket;
 
 public class Client {
     private static Client c;
-    boolean ing = true;
-    Socket sock= null;
-    BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
-    PrintWriter out = null;            //서버로 내보내기 위한 출력 스트림
-    String line = "ServerMsg";
+    private Socket sock = null;
+    private BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
+    private PrintWriter out = null;            //서버로 내보내기 위한 출력 스트림
+    private String line = null;
 
     private Client(){}
 
@@ -32,13 +31,15 @@ public class Client {
             try {
                 InetSocketAddress sock_address = new InetSocketAddress(IP, PORT);
                 sock = new Socket();
-                sock.connect(sock_address, 2000);
+                sock.connect(sock_address, 1000);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
                 ReadThread();
                 Option.connect_true();
             } catch (IOException e) {
+                sock = null;
                 Option.connect_false();
+                Log.i("ju", e.getLocalizedMessage());
             }
         }).start();
     }
@@ -50,36 +51,39 @@ public class Client {
             out.println(msg);                        //서버로 데이터 전송
             out.flush();
         }).start();
-        Log.i("push", msg);
+        Log.i("ju", msg);
     }
 
     public void ReadThread(){
         new Thread(()->{
-            while(ing){
+            while(true){
                 if(sock == null || sock.isClosed())
                     break;
-                ReadMsg();
+                else{
+                    try {
+                        line = in.readLine();                //Client로부터 데이터를 읽어옴
+                        Log.i("ju", line);
+                        if(line.equals("C"))
+                            PushMsg("C");
+                    } catch (IOException e) {
+                        Log.i("ju", e.getLocalizedMessage());
+                        break;
+                    }
+                }
             }
         }).start();
     }
 
-    public void ReadMsg(){
-        try {
-            line = in.readLine();                //Client로부터 데이터를 읽어옴
-            Log.i("pull", line);
-            if(line.equals("C"))
-                PushMsg("C");
-            else
-                return;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public boolean SockLife(){
+        if(sock == null || sock.isClosed())
+            return true;
+        else
+            return false;
     }
 
     public void CloseSock(){
         new Thread(()->{
             try {
-                ing = false;
                 Option.connect_false();
                 sock.close();
             } catch (IOException e) {

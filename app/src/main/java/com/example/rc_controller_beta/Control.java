@@ -15,12 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Control extends AppCompatActivity {
-    Button exit;
-    SeekBar speedBar;
-
-    ImageButton go, back, left, right, option;
-    TextView net, event, server;
     Client c = Client.getInstance();
+    private Button exit;
+    private ImageButton go, back, left, right, option;
+    private TextView net, event, server;
+    private SeekBar speedBar;
     private long time= 0;
 
     public void onBackPressed(){
@@ -28,45 +27,19 @@ public class Control extends AppCompatActivity {
             time=System.currentTimeMillis();
             Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.",Toast.LENGTH_SHORT).show();
         }else if(System.currentTimeMillis()-time<2000){
-            if(c.sock != null){
+            if(!c.SockLife()){
                 c.PushMsg("E");
                 c.CloseSock();
-            }
-            else{
-                c.ing = false;
+            } else
                 Option.connect_false();
-            }
             ActivityCompat.finishAffinity(this);
             System.exit(0);
         }
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_control_portrait);
-        } else {
-            setContentView(R.layout.activity_control);
-        }
-
-        speedBar = (SeekBar)findViewById(R.id.speedValue);
-        exit = findViewById(R.id.exitButton);
-        go = findViewById(R.id.up_img);
-        back = findViewById(R.id.down_img);
-        left = findViewById(R.id.left_img);
-        right = findViewById(R.id.right_img);
-        option = findViewById(R.id.option_button);
-        net = findViewById(R.id.net_state);
-        event = findViewById(R.id.event_log);
-        server = findViewById(R.id.event_server);
-
-        option.setOnClickListener(v -> {
-            Intent in = new Intent(getApplicationContext(), Option.class);
-            startActivity(in);
-        });
-
+    protected void onResume() {
+        super.onResume();
         if(Option.get_connect()) {
             net.setText("Network: ON");
 
@@ -86,17 +59,13 @@ public class Control extends AppCompatActivity {
             });
 
             exit.setOnClickListener(v -> {
-                event.setText("exit...");
-                if(c.sock != null){
+                net.setText("Network: OFF");
+                event.setText("EventLog");
+                if(!c.SockLife()){
                     c.PushMsg("E");
                     c.CloseSock();
-                }
-                else{
-                    c.ing = false;
+                } else
                     Option.connect_false();
-                }
-                Intent in = new Intent(this, MainActivity.class);
-                startActivity(in);
             });
 
             go.setOnTouchListener((view, motionEvent) -> {
@@ -160,7 +129,34 @@ public class Control extends AppCompatActivity {
         }
     }
 
-    public class LR implements Runnable {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.activity_control_portrait);
+        } else {
+            setContentView(R.layout.activity_control);
+        }
+
+        speedBar = (SeekBar)findViewById(R.id.speedValue);
+        exit = findViewById(R.id.exitButton);
+        go = findViewById(R.id.up_img);
+        back = findViewById(R.id.down_img);
+        left = findViewById(R.id.left_img);
+        right = findViewById(R.id.right_img);
+        option = findViewById(R.id.option_button);
+        net = findViewById(R.id.net_state);
+        event = findViewById(R.id.event_log);
+        server = findViewById(R.id.event_server);
+
+        option.setOnClickListener(v -> {
+            Intent in = new Intent(getApplicationContext(), Option.class);
+            startActivity(in);
+        });
+    }
+
+    private class LR implements Runnable {
         private String s;
         private boolean ing = true;
 
