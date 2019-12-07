@@ -80,7 +80,7 @@ public class Option extends AppCompatActivity {
                 set_ipport();
                 SaveIPPW(IP, PORT);
             }
-            c.connection(IP, Integer.parseInt((PORT)));
+            c.connection(this, IP, Integer.parseInt((PORT)));
         });
 
         b2.setOnClickListener(v -> {

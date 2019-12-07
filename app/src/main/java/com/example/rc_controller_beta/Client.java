@@ -1,5 +1,6 @@
 package com.example.rc_controller_beta;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Client {
+    private SSLclient SSLc;
     private static Client c;
     private Socket sock = null;
     private BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
@@ -26,14 +28,25 @@ public class Client {
         return c;
     }
 
-    public void connection(String IP, int PORT){
+    public void connection(Context con, String IP, int PORT){
         new Thread(()->{
             try {
+                // SSL 로그인 시도
+                SSLc = new SSLclient(con, IP, PORT);
+                if(SSLc.Connection() == false)
+                    return;
+
+                // 서버 연결 시도
+                Log.i("ju", "서버 연결 시도");
                 InetSocketAddress sock_address = new InetSocketAddress(IP, PORT);
                 sock = new Socket();
-                sock.connect(sock_address, 1000);
+                sock.connect(sock_address, 2000);
+
+                // 스트림 설정
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
+
+                // 인풋 쓰레드 시작
                 ReadThread();
                 Option.connect_true();
             } catch (IOException e) {
@@ -48,7 +61,7 @@ public class Client {
         new Thread(()->{
             if(sock == null || sock.isClosed())
                 return;
-            out.println(msg);                        //서버로 데이터 전송
+            out.println(msg);
             out.flush();
         }).start();
         Log.i("ju", msg);
@@ -61,7 +74,7 @@ public class Client {
                     break;
                 else{
                     try {
-                        line = in.readLine();                //Client로부터 데이터를 읽어옴
+                        line = in.readLine();
                         Log.i("ju", line);
                         if(line.equals("C"))
                             PushMsg("C");
