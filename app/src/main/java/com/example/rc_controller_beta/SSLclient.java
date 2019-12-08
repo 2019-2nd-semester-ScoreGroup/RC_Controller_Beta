@@ -24,11 +24,19 @@ public class SSLclient {
 
     public boolean Connection(){
         try {
-            // 키스토어 설정.
+            // 키스토어 객체 생성.
             KeyStore keystore = KeyStore.getInstance("BKS");
+
+            // 암호화 알고리즘 설정.
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+
+            // BKS 파일 로드.
             InputStream trustStoreStream = con.getResources().openRawResource(R.raw.client);
-            keystore.load(trustStoreStream, "12142".toCharArray()); // BKS 파일, 비밀번호 설정.
+
+            // BKS 파일, BKS 비밀번호 설정.
+            keystore.load(trustStoreStream, "12142".toCharArray());
+
+            // 키스토어 설정.
             tmf.init(keystore);
 
             // 키스토어 사용을 위해 SSL context 설정.
