@@ -40,7 +40,7 @@ public class Client {
                 Log.i("ju", "서버 연결 시도");
                 InetSocketAddress sock_address = new InetSocketAddress(IP, PORT);
                 sock = new Socket();
-                sock.connect(sock_address, 2000);
+                sock.connect(sock_address, 5000);
 
                 // 스트림 설정
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
