@@ -15,7 +15,7 @@ public class Option extends AppCompatActivity {
     private Button b1, b2;
     private EditText ip, port;
     private TextView v1, v2;
-    private static String IP = "", PORT = "";
+    private String IP = "", PORT = "";
     private static boolean connect = false;
 
     /**쉐얼드 프리퍼런스 아이피, 패스워드 저장*/
