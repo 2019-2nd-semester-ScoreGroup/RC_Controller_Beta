@@ -17,15 +17,14 @@ public class Client {
     private BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
     private PrintWriter out = null;            //서버로 내보내기 위한 출력 스트림
     private String line = null;
-
+    /**클라이언트 객체는 싱글톤으로 구현*/
     private Client(){}
-
     public static Client getInstance(){
         if(c == null)
             c = new Client();
         return c;
     }
-
+    /**서버 연결 설정*/
     public void connection(String IP, int PORT){
         new Thread(()->{
             try {
@@ -43,7 +42,7 @@ public class Client {
             }
         }).start();
     }
-
+    /**서버에 메시지 보내기*/
     public void PushMsg(String msg){
         new Thread(()->{
             if(sock == null || sock.isClosed())
@@ -53,7 +52,7 @@ public class Client {
         }).start();
         Log.i("ju", msg);
     }
-
+    /**서버에 메시지 받기*/
     public void ReadThread(){
         new Thread(()->{
             while(true){
@@ -73,14 +72,14 @@ public class Client {
             }
         }).start();
     }
-
+    /**소켓 상태 반환*/
     public boolean SockLife(){
         if(sock == null || sock.isClosed())
             return true;
         else
             return false;
     }
-
+    /**소켓 클로즈*/
     public void CloseSock(){
         new Thread(()->{
             try {

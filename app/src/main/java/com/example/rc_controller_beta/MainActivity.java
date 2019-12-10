@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_main);
         }
-
+        /**1초 후 컨트롤러 액티비티로 전환*/
         new Thread(()->{
             try {
                 Thread.sleep(1000);

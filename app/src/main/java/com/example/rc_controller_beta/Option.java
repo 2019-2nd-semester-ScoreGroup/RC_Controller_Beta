@@ -64,6 +64,7 @@ public class Option extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_option);
+        /**레이아웃 객체 생성*/
         b1 = findViewById(R.id.ipport_button);
         b2 = findViewById(R.id.developer_button);
         ip = findViewById(R.id.ip_edit);
@@ -71,7 +72,7 @@ public class Option extends AppCompatActivity {
         v1 = findViewById(R.id.ip_view);
         v2 = findViewById(R.id.port_view);
         ImportIPPW();
-
+        /**클라이언트 아이피 포트 설정 버튼 리스너*/
         b1.setOnClickListener(v -> {
             set_edit();
             if(IP.equals("") || PORT.equals(""))
@@ -82,7 +83,7 @@ public class Option extends AppCompatActivity {
             }
             c.connection(IP, Integer.parseInt((PORT)));
         });
-
+        /**개발자 모드 버튼 리스너(강제 연결 설정)*/
         b2.setOnClickListener(v -> {
             if(connect == false){
                 connect = true;
