@@ -31,7 +31,7 @@ public class Client {
             try {
                 InetSocketAddress sock_address = new InetSocketAddress(IP, PORT);
                 sock = new Socket();
-                sock.connect(sock_address, 1000);
+                sock.connect(sock_address, 2000);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
                 ReadThread();
