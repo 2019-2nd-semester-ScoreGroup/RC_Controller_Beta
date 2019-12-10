@@ -18,7 +18,7 @@ public class Control extends AppCompatActivity {
     Client c = Client.getInstance();
     private Button exit;
     private ImageButton go, back, left, right, option;
-    private TextView net, event, server;
+    private TextView net, event;
     private SeekBar speedBar;
     private long time= 0;
 
@@ -148,7 +148,6 @@ public class Control extends AppCompatActivity {
         option = findViewById(R.id.option_button);
         net = findViewById(R.id.net_state);
         event = findViewById(R.id.event_log);
-        server = findViewById(R.id.event_server);
 
         option.setOnClickListener(v -> {
             Intent in = new Intent(getApplicationContext(), Option.class);
