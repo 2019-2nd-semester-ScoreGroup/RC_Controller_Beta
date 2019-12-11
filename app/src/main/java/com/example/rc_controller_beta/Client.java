@@ -19,15 +19,14 @@ public class Client {
     private BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
     private PrintWriter out = null;            //서버로 내보내기 위한 출력 스트림
     private String line = null;
-
+    /**Clinet 생성은 싱글톤 방식*/
     private Client(){}
-
     public static Client getInstance(){
         if(c == null)
             c = new Client();
         return c;
     }
-
+    /**Clinet 연결 메서드*/
     public void connection(Context con, String IP, int PORT){
         new Thread(()->{
             try {
@@ -56,7 +55,7 @@ public class Client {
             }
         }).start();
     }
-
+    /**메시지 전송 메서드*/
     public void PushMsg(String msg){
         new Thread(()->{
             if(sock == null || sock.isClosed())
@@ -66,7 +65,7 @@ public class Client {
         }).start();
         Log.i("ju", msg);
     }
-
+    /**메시지 입력 메서드*/
     public void ReadThread(){
         new Thread(()->{
             while(true){
@@ -86,14 +85,14 @@ public class Client {
             }
         }).start();
     }
-
+    /**소켓 상태 반환 메서드*/
     public boolean SockLife(){
         if(sock == null || sock.isClosed())
             return true;
         else
             return false;
     }
-
+    /**소켓 클로즈 메서드*/
     public void CloseSock(){
         new Thread(()->{
             try {

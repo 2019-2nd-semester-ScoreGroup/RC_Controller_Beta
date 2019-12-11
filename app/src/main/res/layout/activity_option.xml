@@ -34,7 +34,7 @@
                 android:digits="1234567890."
                 android:ems="10"
                 android:hint="아이피를 입력하세요"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:textColorHint="@color/colorAccent"
                 android:textSize="24dp" />
 
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="포트를 입력하세요"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:textColorHint="@color/colorAccent"
                 android:textSize="24dp" />
         </LinearLayout>
@@ -143,7 +143,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
-        android:text=" 제작팀: WYSIWYG"
+        android:text=" 제작팀: K\u0026J"
         android:textColor="#000000"
         android:textSize="24dp" />
 

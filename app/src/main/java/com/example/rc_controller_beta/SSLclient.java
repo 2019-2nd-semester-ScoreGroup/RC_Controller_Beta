@@ -15,16 +15,16 @@ public class SSLclient {
     private Context con;
     private String ip;
     private int port;
-
+    /**SSLclient 생성자*/
     public SSLclient(Context con, String ip, int port){
         this.con = con;
         this.ip = ip;
         this.port = port;
     }
-
+    /**SSLclient 연결*/
     public boolean Connection(){
         try {
-            // 키스토어 객체 생성.
+            //키스토어 객체 생성.
             KeyStore keystore = KeyStore.getInstance("BKS");
 
             // 암호화 알고리즘 설정.

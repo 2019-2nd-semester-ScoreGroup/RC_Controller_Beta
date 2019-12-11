@@ -7,7 +7,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-
+    /**액티비티 생성 시 실행*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_main);
         }
-
+        // 1초 후 컨트롤 액티비티로 전환
         new Thread(()->{
             try {
                 Thread.sleep(1000);

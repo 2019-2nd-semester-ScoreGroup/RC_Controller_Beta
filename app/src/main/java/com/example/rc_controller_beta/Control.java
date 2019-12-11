@@ -21,7 +21,7 @@ public class Control extends AppCompatActivity {
     private TextView net, event, server;
     private SeekBar speedBar;
     private long time= 0;
-
+    /**뒤로가기 2번 시 앱 종료*/
     public void onBackPressed(){
         if(System.currentTimeMillis()-time>=2000){
             time=System.currentTimeMillis();
@@ -36,13 +36,13 @@ public class Control extends AppCompatActivity {
             System.exit(0);
         }
     }
-
+    /**액티비티 전환 시 실행*/
     @Override
     protected void onResume() {
         super.onResume();
         if(Option.get_connect()) {
             net.setText("Network: ON");
-
+            // 스피드바 리스너
             speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
                 public void onStopTrackingTouch(SeekBar seekBar) {
                 }
@@ -57,7 +57,7 @@ public class Control extends AppCompatActivity {
                     c.PushMsg(speed);
                 }
             });
-
+            // 연결 해제 버튼 리스너
             exit.setOnClickListener(v -> {
                 net.setText("Network: OFF");
                 event.setText("EventLog");
@@ -67,13 +67,12 @@ public class Control extends AppCompatActivity {
                 } else
                     Option.connect_false();
             });
-
+            // 전진 버튼 리스너
             go.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
                     event.setText("F");
                     c.PushMsg("F");
-
                 }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     // 버튼에서 손을 떼었을 때
                     event.setText("N");
@@ -81,7 +80,7 @@ public class Control extends AppCompatActivity {
                 }
                 return false;
             });
-
+            // 후진 버튼 리스너
             back.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     // 버튼을 눌렀을 때
@@ -94,7 +93,7 @@ public class Control extends AppCompatActivity {
                 }
                 return false;
             });
-
+            // 좌향 버튼 리스너
             LR L_Run = new LR("L");
             left.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -109,7 +108,7 @@ public class Control extends AppCompatActivity {
                 }
                 return false;
             });
-
+            // 우향 버튼 리스너
             LR R_Run = new LR("R");
             right.setOnTouchListener((view, motionEvent) -> {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -128,7 +127,7 @@ public class Control extends AppCompatActivity {
             net.setText("Network: OFF");
         }
     }
-
+    /**액티비티 생성 시 실행*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +137,7 @@ public class Control extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_control);
         }
-
+        // 레이아웃 객체 생성
         speedBar = (SeekBar)findViewById(R.id.speedValue);
         exit = findViewById(R.id.exitButton);
         go = findViewById(R.id.up_img);
@@ -149,13 +148,13 @@ public class Control extends AppCompatActivity {
         net = findViewById(R.id.net_state);
         event = findViewById(R.id.event_log);
         server = findViewById(R.id.event_server);
-
+        // 옵션 전환 버튼 리스너
         option.setOnClickListener(v -> {
             Intent in = new Intent(getApplicationContext(), Option.class);
             startActivity(in);
         });
     }
-
+    /**좌향과 우향 지속 신호 전송을 위한 런어블 클래스*/
     private class LR implements Runnable {
         private String s;
         private boolean ing = true;

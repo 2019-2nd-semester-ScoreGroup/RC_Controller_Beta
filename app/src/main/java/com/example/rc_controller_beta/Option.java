@@ -26,7 +26,6 @@ public class Option extends AppCompatActivity {
         editor.putString("PORT", port);
         editor.commit();
     }
-
     /**쉐얼드 프리퍼런스 아이피, 패스워드 불러오기*/
     private void ImportIPPW(){
         SharedPreferences pref = getSharedPreferences("temp", MODE_PRIVATE);
@@ -34,31 +33,31 @@ public class Option extends AppCompatActivity {
         PORT = pref.getString("PORT", "8080");
         set_ipport();
     }
-
+    /**연결 상태 반환*/
     public static boolean get_connect(){
         return connect;
     }
-
+    /**연결을 true로 반환*/
     public static void connect_true(){
         connect = true;
     }
-
+    /**연결을 false로 반환*/
     public static void connect_false(){
         connect = false;
     }
-
+    /**아이피,포트 설정 메서드*/
     private void set_ipport(){
         v1.setText(IP);
         v2.setText(PORT);
         ip.setText(IP);
         port.setText(PORT);
     }
-
+    /**아이피,포트 EditText로부터 가져오기*/
     private void set_edit(){
         IP = ip.getText().toString();
         PORT = port.getText().toString();
     }
-
+    /**액티비티 생성 시 실행*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +70,7 @@ public class Option extends AppCompatActivity {
         v1 = findViewById(R.id.ip_view);
         v2 = findViewById(R.id.port_view);
         ImportIPPW();
-
+        // 아이피,포트 설정 버튼 리스너
         b1.setOnClickListener(v -> {
             set_edit();
             if(IP.equals("") || PORT.equals(""))
@@ -82,7 +81,7 @@ public class Option extends AppCompatActivity {
             }
             c.connection(this, IP, Integer.parseInt((PORT)));
         });
-
+        // 개발자 모드 버튼 리스너
         b2.setOnClickListener(v -> {
             if(connect == false){
                 connect = true;
