@@ -5,13 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageButton;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
+import com.google.ar.sceneform.rendering.ViewSizer;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
@@ -19,6 +23,8 @@ public class ARcon extends AppCompatActivity {
     private ArFragment arFragment;
     private ViewRenderable v;
     private ImageButton option;
+    private Vector3 down_scaled = new Vector3((float) 0.1, (float) 0.1, (float) 0.1);
+    private ViewSizer vs = view -> down_scaled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,7 @@ public class ARcon extends AppCompatActivity {
 
         ViewRenderable.builder()
                 .setView(this, R.layout.rc)
+                .setSizer(vs)
                 .build()
                 .thenAccept(renderable -> v = renderable);
 
@@ -52,6 +59,8 @@ public class ARcon extends AppCompatActivity {
                     TransformableNode rc = new TransformableNode(arFragment.getTransformationSystem());
                     rc.setParent(anchorNode);
                     rc.setRenderable(v);
+                    v.setShadowReceiver(false);
+                    v.setShadowCaster(false);
                     rc.select();
                 });
     }

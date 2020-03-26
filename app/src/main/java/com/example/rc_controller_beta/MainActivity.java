@@ -25,11 +25,6 @@ public class MainActivity extends AppCompatActivity {
             CameraPermissionHelper.requestCameraPermission(this);
             return;
         }
-
-        new Thread(()->{
-            startActivity(new Intent(MainActivity.this,ARcon.class));
-            finish();
-        }).start();
     }
 
     @Override
@@ -58,6 +53,16 @@ public class MainActivity extends AppCompatActivity {
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
+
+        new Thread(()->{
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            startActivity(new Intent(MainActivity.this,ARcon.class));
+            finish();
+        }).start();
     }
 
     /**
