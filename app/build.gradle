@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.ar.sceneform.plugin'
 
 android {
     compileSdkVersion 29
@@ -38,3 +39,9 @@ dependencies {
     // Alternatively, use ArSceneView without the UX dependency.
     implementation 'com.google.ar.sceneform:core:1.14.0'
 }
+
+
+sceneform.asset('sampledata/rc3d.obj',
+        'default',
+        'sampledata/rc3d.sfa',
+        'src/main/assets/rc3d')
