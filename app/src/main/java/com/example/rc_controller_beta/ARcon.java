@@ -22,15 +22,14 @@ import com.google.ar.sceneform.ux.TransformableNode;
 
 public class ARcon extends AppCompatActivity {
     private ArFragment arFragment;
-    private ViewRenderable start, end;
     private ImageButton option;
-    private Vector3 down_scaled = new Vector3((float) 0.1, (float) 0.1, (float) 0.1);
-    private ViewSizer vs = view -> down_scaled;
+    private ModelRenderable start, end;
     private Anchor a1, a2;
     private AnchorNode an1, an2;
     private TransformableNode tfn1, tfn2;
     private int count = 0;
-    private ModelRenderable mo;
+    private Vector3 down_scaled = new Vector3((float) 0.1, (float) 0.1, (float) 0.1);
+    private ViewSizer vs = view -> down_scaled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,30 +43,37 @@ public class ARcon extends AppCompatActivity {
             startActivity(in);
         });
 
-//        ModelRenderable.builder()
-//                // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
-//                .setSource(this, Uri.parse("rc3d.sfb"))
-//                // Instead, load as a resource from the 'res/raw' folder ('src/main/res/raw/andy.sfb'):
-//                //.setSource(this, R.raw.andy)
+        ModelRenderable.builder()
+                // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
+                .setSource(this, Uri.parse("for1.sfb"))
+                // Instead, load as a resource from the 'res/raw' folder ('src/main/res/raw/andy.sfb'):
+                //.setSource(this, R.raw.andy)
+                .build()
+                .thenAccept(renderable -> start = renderable)
+                .exceptionally(
+                        throwable -> {
+                            Log.e("TAG", "Unable to load Renderable.", throwable);
+                            return null;
+                        });
+
+        ModelRenderable.builder()
+                // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
+                .setSource(this, Uri.parse("here.sfb"))
+                // Instead, load as a resource from the 'res/raw' folder ('src/main/res/raw/andy.sfb'):
+                //.setSource(this, R.raw.andy)
+                .build()
+                .thenAccept(renderable -> end = renderable)
+                .exceptionally(
+                        throwable -> {
+                            Log.e("TAG", "Unable to load Renderable.", throwable);
+                            return null;
+                        });
+
+//        ViewRenderable.builder()
+//                .setView(this, R.layout.rc)
+//                .setSizer(vs)
 //                .build()
-//                .thenAccept(renderable -> mo = renderable)
-//                .exceptionally(
-//                        throwable -> {
-//                            Log.e("TAG", "Unable to load Renderable.", throwable);
-//                            return null;
-//                        });
-
-        ViewRenderable.builder()
-                .setView(this, R.layout.rc)
-                .setSizer(vs)
-                .build()
-                .thenAccept(renderable -> start = renderable);
-
-        ViewRenderable.builder()
-                .setView(this, R.layout.des)
-                .setSizer(vs)
-                .build()
-                .thenAccept(renderable -> end = renderable);
+//                .thenAccept(renderable -> start = renderable);
 
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
@@ -82,10 +88,12 @@ public class ARcon extends AppCompatActivity {
                         an1.setParent(arFragment.getArSceneView().getScene());
                         // Create the transformable and add it to the anchor.
                         tfn1 = new TransformableNode(arFragment.getTransformationSystem());
+                        tfn1.getScaleController().setMaxScale(0.7f);
+                        tfn1.getScaleController().setMinScale(0.5f);
                         tfn1.setParent(an1);
                         tfn1.setRenderable(start);
-                        start.setShadowReceiver(false);
-                        start.setShadowCaster(false);
+//                        start.setShadowReceiver(false);
+//                        start.setShadowCaster(false);
                         tfn1.select();
                         count++;
                     }else if(count == 1){
@@ -97,10 +105,12 @@ public class ARcon extends AppCompatActivity {
                         an2.setParent(arFragment.getArSceneView().getScene());
                         // Create the transformable and add it to the anchor.
                         tfn2 = new TransformableNode(arFragment.getTransformationSystem());
+                        tfn2.getScaleController().setMaxScale(1.7f);
+                        tfn2.getScaleController().setMinScale(1.5f);
                         tfn2.setParent(an2);
                         tfn2.setRenderable(end);
-                        end.setShadowReceiver(false);
-                        end.setShadowCaster(false);
+//                        end.setShadowReceiver(false);
+//                        end.setShadowCaster(false);
                         tfn2.select();
                     }
                 });

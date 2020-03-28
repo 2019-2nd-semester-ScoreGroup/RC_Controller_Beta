@@ -1,0 +1,107 @@
+{
+  materials: [
+    {
+      name: 'Mat',
+      parameters: [
+        {
+          baseColor: 'formula1_DefaultMaterial_Diffuse',
+        },
+        {
+          baseColorTint: [
+            0.80000000000000004,
+            0.80000000000000004,
+            0.80000000000000004,
+            1,
+          ],
+        },
+        {
+          metallic: 0,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
+    },
+    {
+      name: 'Mirrors',
+      parameters: [
+        {
+          baseColor: null,
+        },
+        {
+          baseColorTint: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          metallic: 0,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
+    },
+    {
+      name: 'Fillers',
+      parameters: [
+        {
+          baseColor: null,
+        },
+        {
+          baseColorTint: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          metallic: 0,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'TexCoord',
+      'Orientation',
+    ],
+    collision: {},
+    file: 'sampledata/formula/Formula 1 mesh.obj',
+    name: 'Formula 1 mesh',
+    recenter: 'root',
+    scale: 0.009,
+  },
+  samplers: [
+    {
+      file: 'sampledata/formula\\Substance SpecGloss\\Right ones\\formula1_DefaultMaterial_Diffuse.png',
+      name: 'formula1_DefaultMaterial_Diffuse',
+      pipeline_name: 'C:\\Users\\Dil Afroze\\Desktop\\formula 1\\Substance SpecGloss\\Right ones\\formula1_DefaultMaterial_Diffuse.png',
+    },
+    {
+      file: 'sampledata/formula\\Substance SpecGloss\\Right ones\\formula1_DefaultMaterial_Specular.png',
+      name: 'formula1_DefaultMaterial_Specular',
+      pipeline_name: 'C:\\Users\\Dil Afroze\\Desktop\\formula 1\\Substance SpecGloss\\Right ones\\formula1_DefaultMaterial_Specular.png',
+    },
+  ],
+  version: '0.54:2',
+}

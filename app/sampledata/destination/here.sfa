@@ -1,0 +1,123 @@
+{
+  animations: [
+    {
+      path: 'sampledata/destination/here.fbx',
+    },
+  ],
+  materials: [
+    {
+      name: 'Material_104',
+      parameters: [
+        {
+          baseColor: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          baseColorMap: '2038',
+        },
+        {
+          normalMap: null,
+        },
+        {
+          interpolatedColor: null,
+        },
+        {
+          metallic: 0,
+        },
+        {
+          metallicMap: null,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          roughnessMap: null,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/fbx_material.sfm',
+    },
+    {
+      name: 'Material_106',
+      parameters: [
+        {
+          baseColor: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          baseColorMap: '2048',
+        },
+        {
+          normalMap: null,
+        },
+        {
+          interpolatedColor: null,
+        },
+        {
+          metallic: 0,
+        },
+        {
+          metallicMap: null,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          roughnessMap: null,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/fbx_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'Color',
+      'TexCoord',
+      'Orientation',
+      'BoneIndices',
+      'BoneWeights',
+    ],
+    collision: {},
+    file: 'sampledata/destination/here.fbx',
+    name: 'here',
+    recenter: 'root',
+    scale: 15.781973000000001,
+  },
+  samplers: [
+    {
+      file: 'sampledata/destination\\here.fbm\\2038.png',
+      name: '2038',
+      pipeline_name: 'here.fbm\\2038.png',
+    },
+    {
+      file: 'sampledata/destination\\here.fbm\\2051.png',
+      name: '2051',
+      pipeline_name: 'here.fbm\\2051.png',
+    },
+    {
+      file: 'sampledata/destination\\here.fbm\\2042.png',
+      name: '2042',
+      pipeline_name: 'here.fbm\\2042.png',
+    },
+    {
+      file: 'sampledata/destination\\here.fbm\\2048.png',
+      name: '2048',
+      pipeline_name: 'here.fbm\\2048.png',
+    },
+  ],
+  version: '0.54:2',
+}

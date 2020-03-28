@@ -40,8 +40,12 @@ dependencies {
     implementation 'com.google.ar.sceneform:core:1.14.0'
 }
 
-
-sceneform.asset('sampledata/rc3d.obj',
+sceneform.asset('sampledata/formula/Formula 1 mesh.obj',
         'default',
-        'sampledata/rc3d.sfa',
-        'src/main/assets/rc3d')
+        'sampledata/formula/Formula 1 mesh.sfa',
+        'src/main/assets/for1.sfb')
+
+sceneform.asset('sampledata/destination/here.fbx',
+        'default',
+        'sampledata/destination/here.sfa',
+        'src/main/assets/here')
