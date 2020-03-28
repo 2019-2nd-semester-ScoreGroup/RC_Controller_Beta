@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
@@ -92,6 +93,7 @@ public class ARcon extends AppCompatActivity {
                         tfn1.getScaleController().setMinScale(0.5f);
                         tfn1.setParent(an1);
                         tfn1.setRenderable(start);
+                        Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
 //                        start.setShadowReceiver(false);
 //                        start.setShadowCaster(false);
                         tfn1.select();
