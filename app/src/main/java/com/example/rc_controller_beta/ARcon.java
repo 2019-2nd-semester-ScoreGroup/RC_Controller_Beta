@@ -8,29 +8,42 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
+import com.google.ar.core.Pose;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.rendering.Color;
+import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.rendering.ViewSizer;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
+import java.util.ArrayList;
+
 public class ARcon extends AppCompatActivity {
+    ArrayList<Float> arrayList1 = new ArrayList<>();
+    ArrayList<Float> arrayList2 = new ArrayList<>();
     private ArFragment arFragment;
     private ImageButton option;
+    private TextView txtDistance;
     private ModelRenderable start, end;
     private Anchor a1, a2;
     private AnchorNode an1, an2;
     private TransformableNode tfn1, tfn2;
+    private Vector3 point1, point2;
     private int count = 0;
-    private Vector3 down_scaled = new Vector3((float) 0.1, (float) 0.1, (float) 0.1);
-    private ViewSizer vs = view -> down_scaled;
+//    private Vector3 down_scaled = new Vector3((float) 0.1, (float) 0.1, (float) 0.1);
+//    private ViewSizer vs = view -> down_scaled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +51,7 @@ public class ARcon extends AppCompatActivity {
         setContentView(R.layout.activity_arcon);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         option = findViewById(R.id.option_button);
+        txtDistance = findViewById(R.id.txtDistance);
 
         option.setOnClickListener(v -> {
             Intent in = new Intent(getApplicationContext(), Option.class);
@@ -87,6 +101,13 @@ public class ARcon extends AppCompatActivity {
                         a1 = hitResult.createAnchor();
                         an1 = new AnchorNode(a1);
                         an1.setParent(arFragment.getArSceneView().getScene());
+
+                        Pose pose = a1.getPose();
+                        if (arrayList1.isEmpty()) {
+                            arrayList1.add(pose.tx());
+                            arrayList1.add(pose.ty());
+                            arrayList1.add(pose.tz());
+                        }
                         // Create the transformable and add it to the anchor.
                         tfn1 = new TransformableNode(arFragment.getTransformationSystem());
                         tfn1.getScaleController().setMaxScale(0.7f);
@@ -94,17 +115,32 @@ public class ARcon extends AppCompatActivity {
                         tfn1.setParent(an1);
                         tfn1.setRenderable(start);
                         Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
+                        txtDistance.setText("목적지를 설정하세요");
 //                        start.setShadowReceiver(false);
 //                        start.setShadowCaster(false);
                         tfn1.select();
                         count++;
                     }else if(count == 1){
-                        if(an2 != null)
+                        if(an2 != null){
                             arFragment.getArSceneView().getScene().removeChild(an2);
+                            arrayList2.clear();
+                            a2 = null;
+                            an2 = null;
+                        }
+                        int val = motionEvent.getActionMasked();
+                        float axisVal = motionEvent.getAxisValue(MotionEvent.AXIS_X, motionEvent.getPointerId(motionEvent.getPointerCount() - 1));
+                        Log.e("Values:", String.valueOf(val) + String.valueOf(axisVal));
                         // Create the Anchor.
                         a2 = hitResult.createAnchor();
                         an2 = new AnchorNode(a2);
                         an2.setParent(arFragment.getArSceneView().getScene());
+
+                        Pose pose = a2.getPose();
+                        arrayList2.add(pose.tx());
+                        arrayList2.add(pose.ty());
+                        arrayList2.add(pose.tz());
+                        float d = getDistanceMeters(arrayList1, arrayList2);
+                        txtDistance.setText("거리\n" + String.valueOf(d) + "m");
                         // Create the transformable and add it to the anchor.
                         tfn2 = new TransformableNode(arFragment.getTransformationSystem());
                         tfn2.getScaleController().setMaxScale(1.7f);
@@ -114,50 +150,37 @@ public class ARcon extends AppCompatActivity {
 //                        end.setShadowReceiver(false);
 //                        end.setShadowCaster(false);
                         tfn2.select();
+
+                        point1 = an1.getWorldPosition();
+                        point2 = an2.getWorldPosition();
+                        final Vector3 difference = Vector3.subtract(point1, point2);
+                        final Vector3 directionFromTopToBottom = difference.normalized();
+                        final Quaternion rotationFromAToB =
+                                Quaternion.lookRotation(directionFromTopToBottom, Vector3.up());
+                        MaterialFactory.makeOpaqueWithColor(getApplicationContext(), new Color(0, 255, 244))
+                                .thenAccept(
+                                        material -> {
+                                            ModelRenderable model = ShapeFactory.makeCube(
+                                                    new Vector3(.01f, .01f, difference.length()),
+                                                    Vector3.zero(), material);
+                                            Node node = new Node();
+                                            node.setParent(an2);
+                                            node.setRenderable(model);
+                                            node.setWorldPosition(Vector3.add(point1, point2).scaled(.5f));
+                                            node.setWorldRotation(rotationFromAToB);
+                                        }
+                                );
                     }
                 });
     }
 
-//    private void addLineBetweenPoints(Scene scene, Vector3 from, Vector3 to) {
-//        // prepare an anchor position
-//        Quaternion camQ = scene.getCamera().getWorldRotation();
-//        float[] f1 = new float[]{to.x, to.y, to.z};
-//        float[] f2 = new float[]{camQ.x, camQ.y, camQ.z, camQ.w};
-//        Pose anchorPose = new Pose(f1, f2);
-//
-//        // make an ARCore Anchor
-//        Anchor anchor = mCallback.getSession().createAnchor(anchorPose);
-//        // Node that is automatically positioned in world space based on the ARCore Anchor.
-//        AnchorNode anchorNode = new AnchorNode(anchor);
-//        anchorNode.setParent(scene);
-//
-//        // Compute a line's length
-//        float lineLength = Vector3.subtract(from, to).length();
-//
-//        // Prepare a color
-//        Color colorOrange = new Color(android.graphics.Color.parseColor("#ffa71c"));
-//
-//        // 1. make a material by the color
-//        MaterialFactory.makeOpaqueWithColor(getContext(), colorOrange)
-//                .thenAccept(material -> {
-//                    // 2. make a model by the material
-//                    ModelRenderable model = ShapeFactory.makeCylinder(0.0025f, lineLength,
-//                            new Vector3(0f, lineLength / 2, 0f), material);
-//                    model.setShadowReceiver(false);
-//                    model.setShadowCaster(false);
-//
-//                    // 3. make node
-//                    Node node = new Node();
-//                    node.setRenderable(model);
-//                    node.setParent(anchorNode);
-//
-//                    // 4. set rotation
-//                    final Vector3 difference = Vector3.subtract(to, from);
-//                    final Vector3 directionFromTopToBottom = difference.normalized();
-//                    final Quaternion rotationFromAToB =
-//                            Quaternion.lookRotation(directionFromTopToBottom, Vector3.up());
-//                    node.setWorldRotation(Quaternion.multiply(rotationFromAToB,
-//                            Quaternion.axisAngle(new Vector3(1.0f, 0.0f, 0.0f), 90)));
-//                });
-//    }
+    private float getDistanceMeters(ArrayList<Float> arayList1, ArrayList<Float> arrayList2) {
+
+        float distanceX = arayList1.get(0) - arrayList2.get(0);
+        float distanceY = arayList1.get(1) - arrayList2.get(1);
+        float distanceZ = arayList1.get(2) - arrayList2.get(2);
+        return (float) Math.sqrt(distanceX * distanceX +
+                distanceY * distanceY +
+                distanceZ * distanceZ);
+    }
 }
