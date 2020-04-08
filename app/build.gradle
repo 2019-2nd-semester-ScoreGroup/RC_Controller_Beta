@@ -49,3 +49,13 @@ sceneform.asset('sampledata/destination/here.fbx',
         'default',
         'sampledata/destination/here.sfa',
         'src/main/assets/here')
+
+sceneform.asset('sampledata/start/start.fbx',
+        'default',
+        'sampledata/start/start.sfa',
+        'src/main/assets/start')
+
+sceneform.asset('sampledata/end/end.fbx',
+        'default',
+        'sampledata/end/end.sfa',
+        'src/main/assets/end')

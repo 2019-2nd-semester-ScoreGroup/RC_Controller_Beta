@@ -95,7 +95,7 @@
     file: 'sampledata/destination/here.fbx',
     name: 'here',
     recenter: 'root',
-    scale: 15.781973000000001,
+    scale: 12.781973000000001,
   },
   samplers: [
     {
