@@ -17,20 +17,9 @@ public class MainActivity extends AppCompatActivity {
     private static final double MIN_OPENGL_VERSION = 3.0;
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        // ARCore requires camera permission to operate.
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            CameraPermissionHelper.requestCameraPermission(this);
-            return;
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
+            Toast.makeText(this, "카메라 권한 없이 앱을 동작할 수 없습니다.", Toast.LENGTH_LONG)
                     .show();
             if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
                 // Permission denied with checking "Do not ask again".
@@ -49,16 +38,27 @@ public class MainActivity extends AppCompatActivity {
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
+    }
 
-        new Thread(()->{
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            startActivity(new Intent(MainActivity.this,ARcon.class));
-            finish();
-        }).start();
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // ARCore requires camera permission to operate.
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            CameraPermissionHelper.requestCameraPermission(this);
+            return;
+        }else{
+            new Thread(()->{
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                startActivity(new Intent(MainActivity.this,ARcon.class));
+                finish();
+            }).start();
+        }
     }
 
     /**
