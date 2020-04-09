@@ -1,4 +1,4 @@
-package com.example.rc_controller_beta;
+package com.example.rc_controller_beta.helpers;
 
 /*
  * Copyright 2017 Google Inc. All Rights Reserved.

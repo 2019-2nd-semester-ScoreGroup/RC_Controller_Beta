@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/ux_fragment"
-        android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:name="com.example.rc_controller_beta.augmentedimage.AugmentedImageFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -27,6 +27,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.02" />
+
+    <ImageView
+        android:id="@+id/fitbox_img"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/ux_fragment"
+        app:layout_constraintEnd_toEndOf="@+id/ux_fragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fitcode" />
 
     <TextView
         android:id="@+id/txtDistance"

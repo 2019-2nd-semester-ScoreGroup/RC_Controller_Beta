@@ -1,0 +1,75 @@
+{
+  animations: [
+    {
+      path: 'sampledata/Indicator/indicator.fbx',
+    },
+  ],
+  materials: [
+    {
+      name: 'Material_143',
+      parameters: [
+        {
+          baseColor: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          baseColorMap: '3176',
+        },
+        {
+          normalMap: null,
+        },
+        {
+          interpolatedColor: null,
+        },
+        {
+          metallic: 0,
+        },
+        {
+          metallicMap: null,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          roughnessMap: null,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/fbx_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'Color',
+      'TexCoord',
+      'Orientation',
+      'BoneIndices',
+      'BoneWeights',
+    ],
+    collision: {},
+    file: 'sampledata/Indicator/indicator.fbx',
+    name: 'indicator',
+    recenter: 'root',
+    scale: 10.782519000000001,
+  },
+  samplers: [
+    {
+      file: 'sampledata/Indicator\\indicator.fbm\\3176.png',
+      name: '3176',
+      pipeline_name: 'indicator.fbm\\3176.png',
+    },
+    {
+      file: 'sampledata/Indicator\\indicator.fbm\\3180.png',
+      name: '3180',
+      pipeline_name: 'indicator.fbm\\3180.png',
+    },
+  ],
+  version: '0.54:2',
+}
