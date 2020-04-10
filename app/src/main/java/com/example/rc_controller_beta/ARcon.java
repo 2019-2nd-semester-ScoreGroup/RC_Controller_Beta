@@ -44,14 +44,18 @@ public class ARcon extends AppCompatActivity {
     private ImageButton option;
     private ImageView fixbox;
     private TextView txtDistance;
-    private ModelRenderable start, end, box;
-    private TransformableNode tfn1, tfn2;
-    private AnchorNode an1, an2, dbar;
-    private Material custom;
-    private Vector3 RClocation;
-    private int count = 0;
+    private ModelRenderable Destination_ModelRenderable;
+    private TransformableNode Destination_TransformableNode;
+    private AnchorNode Destination_AnchorNode;
+    private Node RClocationNode;
     private long backKeyPressedTime = 0;
     private Toast toast;
+
+//    private ModelRenderable start, end, box;
+//    private TransformableNode tfn1, tfn2;
+//    private AnchorNode an1, an2, dbar;
+//    private Material custom;
+//    private int count = 0;
 //    private Vector3 down_scaled = new Vector3((float) 0.1, (float) 0.1, (float) 0.1);
 //    private ViewSizer vs = view -> down_scaled;
 
@@ -84,20 +88,6 @@ public class ARcon extends AppCompatActivity {
             startActivity(in);
         });
 
-//        // rc카 모델 렌더블 빌더
-//        ModelRenderable.builder()
-//                // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
-//                .setSource(this, Uri.parse("start.sfb"))
-//                // Instead, load as a resource from the 'res/raw' folder ('src/main/res/raw/andy.sfb'):
-//                //.setSource(this, R.raw.andy)
-//                .build()
-//                .thenAccept(renderable -> start = renderable)
-//                .exceptionally(
-//                        throwable -> {
-//                            Log.e("TAG", "Unable to load Renderable.", throwable);
-//                            return null;
-//                        });
-
         // 목적지 모델 렌더블 빌더
         ModelRenderable.builder()
                 // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
@@ -105,65 +95,24 @@ public class ARcon extends AppCompatActivity {
                 // Instead, load as a resource from the 'res/raw' folder ('src/main/res/raw/andy.sfb'):
                 //.setSource(this, R.raw.andy)
                 .build()
-                .thenAccept(renderable -> end = renderable)
+                .thenAccept(renderable -> Destination_ModelRenderable = renderable)
                 .exceptionally(
                         throwable -> {
                             Log.e("TAG", "Unable to load Renderable.", throwable);
                             return null;
                         });
 
-//        // 거리 막대 속성 빌더
-//        MaterialFactory.makeTransparentWithColor(this, new Color(0,255,255))
-//                .thenAccept(material -> {
-//                    material.setFloat4(MaterialFactory.MATERIAL_COLOR, new Color(0,100,100));
-//                    material.setFloat(MaterialFactory.MATERIAL_METALLIC, 0);
-//                    custom = material;
-//                });
-
-//        // 뷰 렌더블 빌더
-//        ViewRenderable.builder()
-//                .setView(this, R.layout.rc)
-//                .setSizer(vs)
-//                .build()
-//                .thenAccept(renderable -> start = renderable);
-
-//        //rc카 노드 터치 리스너
-//        tfn1 = new TransformableNode(arFragment.getTransformationSystem());
-//        tfn1.setOnTouchListener((hitTestResult, motionEvent) -> {
-//            switch (motionEvent.getAction()){
-//                case MotionEvent.ACTION_MOVE:{
-//                    // 월드 위치 재설정
-//                    an1 = new AnchorNode();
-//                    an1.setWorldPosition(hitTestResult.getPoint());
-//                    Log.e("ju an1", an1.getWorldPosition().toString());
-//                    // 목적지 설정 시
-//                    if(an2 != null){
-//                        // 거리 계산
-//                        setDistance(an2.getWorldPosition(), an1.getWorldPosition());
-//                        // 거리 막대 생성
-////                        drawDistanceBar(an2.getWorldPosition(), an1.getWorldPosition());
-//                    }
-//                    break;
-//                }
-//                default:
-//                    break;
-//            }
-//            return false;
-//        });
-
         //목적지 노드 터치 리스너
-        tfn2 = new TransformableNode(arFragment.getTransformationSystem());
-        tfn2.setOnTouchListener((hitTestResult, motionEvent) -> {
+        Destination_TransformableNode = new TransformableNode(arFragment.getTransformationSystem());
+        Destination_TransformableNode.setOnTouchListener((hitTestResult, motionEvent) -> {
             switch (motionEvent.getAction()){
                 case MotionEvent.ACTION_MOVE:{
                     // 월드 위치 재설정
-                    an2 = new AnchorNode();
-                    an2.setWorldPosition(hitTestResult.getPoint());
-                    Log.e("ju an2", an2.getWorldPosition().toString());
+                    Destination_AnchorNode = new AnchorNode();
+                    Destination_AnchorNode.setWorldPosition(hitTestResult.getPoint());
+                    Log.e("ju an2", Destination_AnchorNode.getWorldPosition().toString());
                     // 거리 계산
-                    setDistance(RClocation, an2.getWorldPosition());
-                    // 거리 막대 생성
-//                    drawDistanceBar(an1.getWorldPosition(), an2.getWorldPosition());
+                    setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
                     break;
                 }
                 default:
@@ -177,36 +126,16 @@ public class ARcon extends AppCompatActivity {
                 return;
             else {
                 // 목적지가 설정되어 있으면 초기화
-                if (an2 != null) {
-                    arFragment.getArSceneView().getScene().removeChild(an2);
-                    an2 = null;
+                if (Destination_AnchorNode != null) {
+                    arFragment.getArSceneView().getScene().removeChild(Destination_AnchorNode);
+                    Destination_AnchorNode = null;
                 }
                 setDestination(hitResult);
             }
         });
-
-//        // ar 공간 탭 리스너
-//        arFragment.setOnTapArPlaneListener(
-//                (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
-//                    if (start == null || end == null) {
-//                        return;
-//                    }
-//                    // 첫 번째 터치시
-//                    if(count == 0){
-//                        setRC(hitResult);
-//                    // 두 번째 터치시
-//                    }else {
-//                        // 목적지가 설정되어 있으면 초기화
-//                        if (an2 != null) {
-//                            arFragment.getArSceneView().getScene().removeChild(an2);
-//                            an2 = null;
-//                        }
-//                        setDestination(hitResult);
-//                    }
-//                });
     }
 
-    // rc 인식 리스너
+    // rc 인식 프레임 리스너
     private void onUpdateFrame(FrameTime frameTime) {
         Frame frame = arFragment.getArSceneView().getArFrame();
 
@@ -222,15 +151,17 @@ public class ARcon extends AppCompatActivity {
                 case PAUSED:
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
+                    txtDistance.setText("RC를 인식중입니다...");
+
 //                    String text = "RC를 인식중입니다...";
 //                    SnackbarHelper.getInstance().showMessage(this, text);
                     break;
 
                 case TRACKING:
-                    if(count == 0){
+                    Log.e("tracking", "...");
+                    if(augmentedImageMap.isEmpty()){
                         Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
                         txtDistance.setText("목적지를 설정하세요");
-                        count = 1;
                     }
 
                     // Have to switch to UI Thread to update View.
@@ -242,7 +173,7 @@ public class ARcon extends AppCompatActivity {
                         node.setImage(augmentedImage);
                         augmentedImageMap.put(augmentedImage, node);
                         arFragment.getArSceneView().getScene().addChild(node);
-                        RClocation = node.getWorldPosition();
+                        RClocationNode = node;
                     }
                     break;
 
@@ -253,76 +184,25 @@ public class ARcon extends AppCompatActivity {
         }
     }
 
-//    // rc 생성
-//    private void setRC(HitResult hitResult){
-//        // rc카 노드 생성
-//        //a1 = hitResult.createAnchor();
-//        an1 = new AnchorNode(hitResult.createAnchor());
-//        an1.setParent(arFragment.getArSceneView().getScene());
-//        Log.e("ju an1", an1.getWorldPosition().toString());
-//        // rc카 모델 생성
-//        tfn1.getScaleController().setMaxScale(2.0f);
-//        tfn1.getScaleController().setMinScale(1.8f);
-//        tfn1.setParent(an1);
-//        tfn1.setRenderable(start);
-//        Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
-//        txtDistance.setText("목적지를 설정하세요");
-//        // 그림자 제거
-//        //start.setShadowReceiver(false);
-//        //start.setShadowCaster(false);
-//        tfn1.select();
-//        count++;
-//    }
-
     // 목적지 생성
     private void setDestination(HitResult hitResult){
         // 목적지 노드 생성
         //a2 = hitResult.createAnchor();
-        an2 = new AnchorNode(hitResult.createAnchor());
-        an2.setParent(arFragment.getArSceneView().getScene());
-        Log.e("ju an2", an2.getWorldPosition().toString());
+        Destination_AnchorNode = new AnchorNode(hitResult.createAnchor());
+        Destination_AnchorNode.setParent(arFragment.getArSceneView().getScene());
+        Log.e("Log Destination_AnchorNode", Destination_AnchorNode.getWorldPosition().toString());
         // 목적지 모델 생성
-        tfn2.getScaleController().setMaxScale(1.0f);
-        tfn2.getScaleController().setMinScale(0.8f);
-        tfn2.setParent(an2);
-        tfn2.setRenderable(end);
+        Destination_TransformableNode.getScaleController().setMaxScale(1.0f);
+        Destination_TransformableNode.getScaleController().setMinScale(0.8f);
+        Destination_TransformableNode.setParent(Destination_AnchorNode);
+        Destination_TransformableNode.setRenderable(Destination_ModelRenderable);
         // 그림자 제거
         //end.setShadowReceiver(false);
         //end.setShadowCaster(false);
-        tfn2.select();
+        Destination_TransformableNode.select();
         // 거리 계산
-        setDistance(RClocation, an2.getWorldPosition());
-        // 거리 막대 생성
-//        drawDistanceBar(an1.getWorldPosition(), an2.getWorldPosition());
+        setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
     }
-
-//    private void drawDistanceBar(Vector3 from, Vector3 to){
-//        if(dbar != null)
-//            arFragment.getArSceneView().getScene().removeChild(dbar);
-//        // 앵커 위치 설정
-//        Quaternion camQ = arFragment.getArSceneView().getScene().getCamera().getWorldRotation();
-//        float[] f1 = new float[]{to.x, to.y, to.z};
-//        float[] f2 = new float[]{camQ.x, camQ.y, camQ.z, camQ.w};
-//        Pose pose = new Pose(f1, f2);
-//        // 거리 막대 앵커노드 생성
-//        dbar = new AnchorNode(arFragment.getArSceneView().getSession().createAnchor(pose));
-//        dbar.setParent(arFragment.getArSceneView().getScene());
-//        // 벡터 간 길이로 거리 추출
-//        float lineLength = Vector3.subtract(from, to).length();
-//        // rc와 목적지 간 막대 생성
-//        box = ShapeFactory.makeCylinder(0.005f, lineLength, new Vector3(0f, lineLength / 2, 0f), custom);
-//        box.setShadowReceiver(false);
-//        box.setShadowCaster(false);
-//        // 노드 할당
-//        Node node = new Node();
-//        node.setRenderable(box);
-//        node.setParent(dbar);
-//        // 노드 위치 설정
-//        final Vector3 difference = Vector3.subtract(to, from);
-//        final Vector3 directionFromTopToBottom = difference.normalized();
-//        final Quaternion rotationFromAToB = Quaternion.lookRotation(directionFromTopToBottom, Vector3.up());
-//        node.setWorldRotation(Quaternion.multiply(rotationFromAToB, Quaternion.axisAngle(new Vector3(1.0f, 0.0f, 0.0f), 90)));
-//    }
 
     // 거리 표시
     private void setDistance(Vector3 from, Vector3 to){
@@ -359,3 +239,106 @@ public class ARcon extends AppCompatActivity {
         }
     }
 }
+
+/**rc카 모델 렌더블 빌더*/
+//        ModelRenderable.builder()
+//                // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
+//                .setSource(this, Uri.parse("start.sfb"))
+//                // Instead, load as a resource from the 'res/raw' folder ('src/main/res/raw/andy.sfb'):
+//                //.setSource(this, R.raw.andy)
+//                .build()
+//                .thenAccept(renderable -> start = renderable)
+//                .exceptionally(
+//                        throwable -> {
+//                            Log.e("TAG", "Unable to load Renderable.", throwable);
+//                            return null;
+//                        });
+
+/** 거리 막대 속성 빌더*/
+//        MaterialFactory.makeTransparentWithColor(this, new Color(0,255,255))
+//                .thenAccept(material -> {
+//                    material.setFloat4(MaterialFactory.MATERIAL_COLOR, new Color(0,100,100));
+//                    material.setFloat(MaterialFactory.MATERIAL_METALLIC, 0);
+//                    custom = material;
+//                });
+
+/** 뷰 렌더블 빌더*/
+//        ViewRenderable.builder()
+//                .setView(this, R.layout.rc)
+//                .setSizer(vs)
+//                .build()
+//                .thenAccept(renderable -> start = renderable);
+
+/**rc카 노드 터치 리스너*/
+//        tfn1 = new TransformableNode(arFragment.getTransformationSystem());
+//        tfn1.setOnTouchListener((hitTestResult, motionEvent) -> {
+//            switch (motionEvent.getAction()){
+//                case MotionEvent.ACTION_MOVE:{
+//                    // 월드 위치 재설정
+//                    an1 = new AnchorNode();
+//                    an1.setWorldPosition(hitTestResult.getPoint());
+//                    Log.e("ju an1", an1.getWorldPosition().toString());
+//                    // 목적지 설정 시
+//                    if(an2 != null){
+//                        // 거리 계산
+//                        setDistance(an2.getWorldPosition(), an1.getWorldPosition());
+//                        // 거리 막대 생성
+////                        drawDistanceBar(an2.getWorldPosition(), an1.getWorldPosition());
+//                    }
+//                    break;
+//                }
+//                default:
+//                    break;
+//            }
+//            return false;
+//        });
+
+/**rc 생성*/
+//    private void setRC(HitResult hitResult){
+//        // rc카 노드 생성
+//        //a1 = hitResult.createAnchor();
+//        an1 = new AnchorNode(hitResult.createAnchor());
+//        an1.setParent(arFragment.getArSceneView().getScene());
+//        Log.e("ju an1", an1.getWorldPosition().toString());
+//        // rc카 모델 생성
+//        tfn1.getScaleController().setMaxScale(2.0f);
+//        tfn1.getScaleController().setMinScale(1.8f);
+//        tfn1.setParent(an1);
+//        tfn1.setRenderable(start);
+//        Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
+//        txtDistance.setText("목적지를 설정하세요");
+//        // 그림자 제거
+//        //start.setShadowReceiver(false);
+//        //start.setShadowCaster(false);
+//        tfn1.select();
+//        count++;
+//    }
+
+/**거리 막대 그리기*/
+//    private void drawDistanceBar(Vector3 from, Vector3 to){
+//        if(dbar != null)
+//            arFragment.getArSceneView().getScene().removeChild(dbar);
+//        // 앵커 위치 설정
+//        Quaternion camQ = arFragment.getArSceneView().getScene().getCamera().getWorldRotation();
+//        float[] f1 = new float[]{to.x, to.y, to.z};
+//        float[] f2 = new float[]{camQ.x, camQ.y, camQ.z, camQ.w};
+//        Pose pose = new Pose(f1, f2);
+//        // 거리 막대 앵커노드 생성
+//        dbar = new AnchorNode(arFragment.getArSceneView().getSession().createAnchor(pose));
+//        dbar.setParent(arFragment.getArSceneView().getScene());
+//        // 벡터 간 길이로 거리 추출
+//        float lineLength = Vector3.subtract(from, to).length();
+//        // rc와 목적지 간 막대 생성
+//        box = ShapeFactory.makeCylinder(0.005f, lineLength, new Vector3(0f, lineLength / 2, 0f), custom);
+//        box.setShadowReceiver(false);
+//        box.setShadowCaster(false);
+//        // 노드 할당
+//        Node node = new Node();
+//        node.setRenderable(box);
+//        node.setParent(dbar);
+//        // 노드 위치 설정
+//        final Vector3 difference = Vector3.subtract(to, from);
+//        final Vector3 directionFromTopToBottom = difference.normalized();
+//        final Quaternion rotationFromAToB = Quaternion.lookRotation(directionFromTopToBottom, Vector3.up());
+//        node.setWorldRotation(Quaternion.multiply(rotationFromAToB, Quaternion.axisAngle(new Vector3(1.0f, 0.0f, 0.0f), 90)));
+//    }
