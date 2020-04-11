@@ -39,11 +39,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.ar.sceneform.math.Quaternion.rotationBetweenVectors;
+import static com.google.ar.sceneform.math.Vector3.angleBetweenVectors;
+
 public class ARcon extends AppCompatActivity {
     private ArFragment arFragment;
     private ImageButton option;
     private ImageView fixbox;
     private TextView txtDistance;
+    private TextView txtRotate;
     private ModelRenderable Destination_ModelRenderable;
     private TransformableNode Destination_TransformableNode;
     private AnchorNode Destination_AnchorNode;
@@ -78,6 +82,7 @@ public class ARcon extends AppCompatActivity {
         option = findViewById(R.id.option_button);
         fixbox = findViewById(R.id.fitbox_img);
         txtDistance = findViewById(R.id.txtDistance);
+        txtRotate = findViewById(R.id.textRotate);
 
         // rc 인식 리스너
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
@@ -113,6 +118,8 @@ public class ARcon extends AppCompatActivity {
                     Log.e("ju an2", Destination_AnchorNode.getWorldPosition().toString());
                     // 거리 계산
                     setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
+                    // 각도 계산
+                    setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
                     break;
                 }
                 default:
@@ -162,6 +169,7 @@ public class ARcon extends AppCompatActivity {
                     if(augmentedImageMap.isEmpty()){
                         Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
                         txtDistance.setText("목적지를 설정하세요");
+                        txtRotate.setText(Float.toString(angleBetweenVectors(new Vector3(1,1,0), new Vector3(0,0,0))));
                     }
 
                     // Have to switch to UI Thread to update View.
@@ -202,6 +210,20 @@ public class ARcon extends AppCompatActivity {
         Destination_TransformableNode.select();
         // 거리 계산
         setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
+        // 각도 계산
+        setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
+    }
+
+    private void setRotate(Vector3 from, Vector3 to) {
+        float rotate = getRotate(from, to);
+        txtRotate.setText(rotate + "(degrees)");
+    }
+
+    private float getRotate(Vector3 from, Vector3 to){
+        float dz = from.z - to.z;
+        float dx = from.x - to.x;
+
+        return (float) Math.toDegrees(Math.atan2(dz, dx));
     }
 
     // 거리 표시
