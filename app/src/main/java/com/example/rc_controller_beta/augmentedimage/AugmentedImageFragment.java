@@ -91,7 +91,7 @@ public class AugmentedImageFragment extends ArFragment {
     // Turn off the plane discovery since we're only looking for images
     getPlaneDiscoveryController().hide();
     getPlaneDiscoveryController().setInstructionView(null);
-    getArSceneView().getPlaneRenderer().setEnabled(false);
+//    getArSceneView().getPlaneRenderer().setEnabled(false);
     return view;
   }
 
@@ -128,7 +128,6 @@ public class AugmentedImageFragment extends ArFragment {
       if (augmentedImageBitmap == null) {
         return false;
       }
-
       augmentedImageDatabase = new AugmentedImageDatabase(session);
       augmentedImageDatabase.addImage(DEFAULT_IMAGE_NAME, augmentedImageBitmap);
       // If the physical size of the image is known, you can instead use:

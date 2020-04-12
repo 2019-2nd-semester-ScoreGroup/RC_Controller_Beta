@@ -20,6 +20,8 @@ import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
+import com.google.ar.core.Trackable;
+import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Node;
@@ -41,13 +43,13 @@ import java.util.Map;
 
 public class ARcon extends AppCompatActivity {
     private ArFragment arFragment;
-    private ImageButton option;
+    private ImageButton option, go, reset;
     private ImageView fixbox;
     private TextView txtDistance;
     private ModelRenderable Destination_ModelRenderable;
     private TransformableNode Destination_TransformableNode;
     private AnchorNode Destination_AnchorNode;
-    private Node RClocationNode;
+    private AugmentedImageNode RClocationNode;
     private long backKeyPressedTime = 0;
     private Toast toast;
 
@@ -76,16 +78,44 @@ public class ARcon extends AppCompatActivity {
         setContentView(R.layout.activity_arcon);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         option = findViewById(R.id.option_button);
+        go = findViewById(R.id.go_button);
+        reset = findViewById(R.id.reset_button);
         fixbox = findViewById(R.id.fitbox_img);
         txtDistance = findViewById(R.id.txtDistance);
 
+        go.setVisibility(View.INVISIBLE);
+        reset.setVisibility(View.INVISIBLE);
+
         // rc 인식 리스너
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
+        arFragment.getArSceneView().getScene().removeOnUpdateListener(this::onUpdateFrame);
 
         // 옵션 버튼 리스너
         option.setOnClickListener(v -> {
             Intent in = new Intent(getApplicationContext(), Option.class);
             startActivity(in);
+        });
+
+        // 이동 버튼 리스너
+        go.setOnClickListener(v -> {
+            Toast.makeText(getApplicationContext(), "go", Toast.LENGTH_SHORT).show();
+        });
+
+        // 초기화 버튼 리스너
+        reset.setOnClickListener(v -> {
+            Toast.makeText(getApplicationContext(), "reset", Toast.LENGTH_SHORT).show();
+            go.setVisibility(View.INVISIBLE);
+            reset.setVisibility(View.INVISIBLE);
+            txtDistance.setText("RC를 인식하세요");
+            augmentedImageMap.clear();
+            if(RClocationNode != null){
+                arFragment.getArSceneView().getScene().removeChild(RClocationNode);
+                RClocationNode = null;
+            }
+            if(Destination_AnchorNode != null){
+                arFragment.getArSceneView().getScene().removeChild(Destination_AnchorNode);
+                Destination_AnchorNode = null;
+            }
         });
 
         // 목적지 모델 렌더블 빌더
@@ -113,6 +143,8 @@ public class ARcon extends AppCompatActivity {
                     Log.e("ju an2", Destination_AnchorNode.getWorldPosition().toString());
                     // 거리 계산
                     setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
+                    // 각도 계산
+                    setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
                     break;
                 }
                 default:
@@ -144,11 +176,11 @@ public class ARcon extends AppCompatActivity {
             return;
         }
 
-        Collection<AugmentedImage> updatedAugmentedImages =
-                frame.getUpdatedTrackables(AugmentedImage.class);
+        Collection<AugmentedImage> updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
         for (AugmentedImage augmentedImage : updatedAugmentedImages) {
             switch (augmentedImage.getTrackingState()) {
                 case PAUSED:
+                    Log.e("trackingJu", "PAUSED");
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
                     txtDistance.setText("RC를 인식중입니다...");
@@ -158,10 +190,12 @@ public class ARcon extends AppCompatActivity {
                     break;
 
                 case TRACKING:
-                    Log.e("tracking", "...");
+                    Log.e("trackingJu", "TRACKING");
                     if(augmentedImageMap.isEmpty()){
                         Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
-                        txtDistance.setText("목적지를 설정하세요");
+                        txtDistance.setText("목적지를 인식하세요");
+                        go.setVisibility(View.VISIBLE);
+                        reset.setVisibility(View.VISIBLE);
                     }
 
                     // Have to switch to UI Thread to update View.
@@ -169,15 +203,16 @@ public class ARcon extends AppCompatActivity {
 
                     // Create a new anchor for newly found images.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
-                        AugmentedImageNode node = new AugmentedImageNode(this);
-                        node.setImage(augmentedImage);
-                        augmentedImageMap.put(augmentedImage, node);
-                        arFragment.getArSceneView().getScene().addChild(node);
-                        RClocationNode = node;
+                        Log.e("trackingJu", " if (!augmentedImageMap.containsKey(augmentedImage))");
+                        RClocationNode = new AugmentedImageNode(this);
+                        RClocationNode.setImage(augmentedImage);
+                        augmentedImageMap.put(augmentedImage, RClocationNode);
+                        arFragment.getArSceneView().getScene().addChild(RClocationNode);
                     }
                     break;
 
                 case STOPPED:
+                    Log.e("trackingJu", "PAUSED");
                     augmentedImageMap.remove(augmentedImage);
                     break;
             }
@@ -202,12 +237,14 @@ public class ARcon extends AppCompatActivity {
         Destination_TransformableNode.select();
         // 거리 계산
         setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
+        // 각도 계산
+        setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
     }
 
     // 거리 표시
     private void setDistance(Vector3 from, Vector3 to){
         float d = getDistanceMeters(from, to);
-        txtDistance.setText("거리\n" + String.valueOf(d) + "m");
+        txtDistance.setText("목적지까지\n" + String.format("%.2f", d) + "m");
     }
 
     // 거리 계산
@@ -216,6 +253,19 @@ public class ARcon extends AppCompatActivity {
         float distanceY = from.y - to.y;
         float distanceZ = from.z - to.z;
         return (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ);
+    }
+
+    // 각도 표시
+    private void setRotate(Vector3 from, Vector3 to) {
+        float rotate = getRotate(from, to);
+        txtDistance.setText(txtDistance.getText().toString() + "/" + String.format("%.2f", rotate) + "°");
+    }
+
+    // 각도 계산
+    private float getRotate(Vector3 from, Vector3 to){
+        float dz = from.z - to.z;
+        float dx = from.x - to.x;
+        return (float) Math.toDegrees(Math.atan2(dz, dx));
     }
 
     // 뒤로가기 종료
