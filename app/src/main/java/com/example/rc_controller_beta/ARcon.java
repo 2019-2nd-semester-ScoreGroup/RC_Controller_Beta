@@ -1,3 +1,30 @@
+/**
+ * AR RC 컨트롤러
+ *
+ * < 사용 설명서 >
+ * - app/assets/qr.jpg 파일만 인식 가능
+ * - RC 인식 후 목적지 설정 가능
+ * - QR 코드 인식 시 "RC를 인식중입니다..." 문구가 길어질 시
+ * - 카메라를 살짝 멀리 했다가 가까이하면서 각도도 조금 다르게 해보면 됨
+ * - go 버튼은 RC랑 연동하면서 구현할 것이고 말 그대로 버튼 클릭 시 RC 출발
+ * - reset 버튼은 화면상 3D 마커를 지우는 건데 보완중
+ * - 기타 사항 카톡 문의
+ *
+ * < 컨트롤러 앱 개발 일정 >
+ * 4월 초) 특정 목적지 AR 표시
+ * - 단순 표시 ----------------------------> 완료
+ * - 지점 선택 ----------------------------> 완료
+ * - 단순 거리 계산 -----------------------> 완료
+ * 4월 중) rc, qr 인식 및 거리와 방향 계산
+ * - qr 코드 인식 -------------------------> 완료
+ * - rc와 qr 거리(미터) 계산 --------------> 완료
+ * - rc와 qr 방향각 계산 ------------------> 완료
+ * 5월 초)
+ * - rc와 앱 연동 -------------------------> 예정
+ * 5월 말)
+ * - 디버깅 -------------------------------> 계속
+ */
+
 package com.example.rc_controller_beta;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -88,7 +115,6 @@ public class ARcon extends AppCompatActivity {
 
         // rc 인식 리스너
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
-        arFragment.getArSceneView().getScene().removeOnUpdateListener(this::onUpdateFrame);
 
         // 옵션 버튼 리스너
         option.setOnClickListener(v -> {
@@ -153,7 +179,9 @@ public class ARcon extends AppCompatActivity {
             return false;
         });
 
+        // 목적지 탭 리스너
         arFragment.setOnTapArPlaneListener((hitResult, plane, motionEvent) -> {
+            // RC 인식 이미지 없을 시 리턴
             if(augmentedImageMap.isEmpty())
                 return;
             else {
