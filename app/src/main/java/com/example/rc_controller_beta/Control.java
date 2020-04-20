@@ -6,21 +6,22 @@ import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class Control extends AppCompatActivity {
     Client c = Client.getInstance();
-    private Button exit;
-    private ImageButton go, back, left, right, option;
-    private TextView net, event, server;
-    private SeekBar speedBar;
+    private Button exit, apply;
+    private ImageButton option;
+    private TextView net, event, degree, doTime, server;
+    private Switch directionSwitch;
     private long time= 0;
+    private String directionText = "F";
 
     public void onBackPressed(){
         if(System.currentTimeMillis()-time>=2000){
@@ -43,21 +44,6 @@ public class Control extends AppCompatActivity {
         if(Option.get_connect()) {
             net.setText("Network: ON");
 
-            speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-                {
-                    String speed;
-
-                    speed = Integer.toString(progress);
-
-                    c.PushMsg(speed);
-                }
-            });
-
             exit.setOnClickListener(v -> {
                 net.setText("Network: OFF");
                 event.setText("EventLog");
@@ -68,61 +54,35 @@ public class Control extends AppCompatActivity {
                     Option.connect_false();
             });
 
-            go.setOnTouchListener((view, motionEvent) -> {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    // 버튼을 눌렀을 때
-                    event.setText("F");
-                    c.PushMsg("F");
-
-                }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    // 버튼에서 손을 떼었을 때
-                    event.setText("N");
-                    c.PushMsg("N");
+            directionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked)
+                        directionText = "F";
+                    directionText = "B";
                 }
-                return false;
             });
 
-            back.setOnTouchListener((view, motionEvent) -> {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    // 버튼을 눌렀을 때
-                    event.setText("B");
-                    c.PushMsg("B");
-                }else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    // 버튼에서 손을 떼었을 때
-                    event.setText("N");
-                    c.PushMsg("N");
-                }
-                return false;
-            });
+            apply.setOnClickListener(v -> {
+                String degreeText = (String) degree.getText();
+                String timeText = (String) doTime.getText();
 
-            LR L_Run = new LR("L");
-            left.setOnTouchListener((view, motionEvent) -> {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    // 버튼을 누르고 있을 때
-                    event.setText("L");
-                    L_Run.ing_true();
-                    new Thread(L_Run).start();
+                if(!"".equals(degreeText)) {
+                    Toast.makeText(getApplicationContext(), "degree를 입력하세요", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                else if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    // 버튼에서 손을 떼었을 때
-                    L_Run.ing_false();
-                }
-                return false;
-            });
 
-            LR R_Run = new LR("R");
-            right.setOnTouchListener((view, motionEvent) -> {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    // 버튼을 누르고 있을 때
-                    event.setText("R");
-                    R_Run.ing_true();
-                    new Thread(R_Run).start();
+                if(Integer.parseInt(degreeText) < 30 || Integer.parseInt(degreeText) > 120) {
+                    Toast.makeText(getApplicationContext(), "degree는 30 ~ 120사이여야 합니다.", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                else if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    // 버튼에서 손을 떼었을 때
-                    R_Run.ing_false();
+
+                if(!"".equals(timeText)) {
+                    Toast.makeText(getApplicationContext(), "time을 입력하세요", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                return false;
+
+                c.PushMsg(degreeText + " " + timeText + " " + directionText);
             });
         }else{
             net.setText("Network: OFF");
@@ -139,16 +99,14 @@ public class Control extends AppCompatActivity {
             setContentView(R.layout.activity_control);
         }
 
-        speedBar = (SeekBar)findViewById(R.id.speedValue);
+        apply = findViewById(R.id.apply);
         exit = findViewById(R.id.exitButton);
-        go = findViewById(R.id.up_img);
-        back = findViewById(R.id.down_img);
-        left = findViewById(R.id.left_img);
-        right = findViewById(R.id.right_img);
         option = findViewById(R.id.option_button);
         net = findViewById(R.id.net_state);
         event = findViewById(R.id.event_log);
         server = findViewById(R.id.event_server);
+        degree = findViewById(R.id.degree);
+        doTime = findViewById(R.id.doTime);
 
         option.setOnClickListener(v -> {
             Intent in = new Intent(getApplicationContext(), Option.class);

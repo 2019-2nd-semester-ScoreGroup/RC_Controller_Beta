@@ -6,70 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Control">
 
-    <ImageButton
-        android:id="@+id/up_img"
-        style="@style/Widget.AppCompat.ImageButton"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/up"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.467" />
-
-    <ImageButton
-        android:id="@+id/down_img"
-        style="@style/Widget.AppCompat.ImageButton"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/down"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.945" />
-
-    <ImageButton
-        android:id="@+id/left_img"
-        style="@style/Widget.AppCompat.ImageButton"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/left"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.026"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.879" />
-
-    <ImageButton
-        android:id="@+id/right_img"
-        style="@style/Widget.AppCompat.ImageButton"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/right"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.247"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.879" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="460dp"
@@ -156,20 +92,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.404" />
 
-    <TextView
-        android:id="@+id/speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Speed"
-        android:textColor="#000000"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.283"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.209" />
-
     <Button
         android:id="@+id/exitButton"
         style="@style/Widget.AppCompat.Button"
@@ -185,18 +107,45 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.407" />
 
-    <SeekBar
-        android:id="@+id/speedValue"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="240dp"
-        android:layout_height="25dp"
-        android:max="10"
-        android:progress="5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.375"
+    <TextView
+        android:id="@+id/degree"
+        android:layout_width="115dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="188dp"
+        android:text="degree"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.282" />
+        app:layout_constraintTop_toBottomOf="@+id/event_server" />
+
+    <TextView
+        android:id="@+id/doTime"
+        android:layout_width="115dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="173dp"
+        android:text="time"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/degree"
+        app:layout_constraintTop_toBottomOf="@+id/exitButton" />
+
+    <Switch
+        android:id="@+id/foward_backward"
+        android:layout_width="127dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="276dp"
+        android:text="foward"
+        android:textAlignment="textStart"
+        app:layout_constraintStart_toEndOf="@+id/doTime"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="적용"
+        tools:layout_editor_absoluteX="289dp"
+        tools:layout_editor_absoluteY="604dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
