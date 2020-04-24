@@ -107,7 +107,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.407" />
 
-    <TextView
+    <EditText
         android:id="@+id/degree"
         android:layout_width="115dp"
         android:layout_height="69dp"
@@ -118,7 +118,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_server" />
 
-    <TextView
+    <EditText
         android:id="@+id/doTime"
         android:layout_width="115dp"
         android:layout_height="69dp"
@@ -144,8 +144,10 @@
         android:id="@+id/apply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="289dp"
+        android:layout_marginTop="35dp"
         android:text="적용"
-        tools:layout_editor_absoluteX="289dp"
-        tools:layout_editor_absoluteY="604dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/foward_backward" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -18,7 +19,8 @@ public class Control extends AppCompatActivity {
     Client c = Client.getInstance();
     private Button exit, apply;
     private ImageButton option;
-    private TextView net, event, degree, doTime, server;
+    private TextView net, event, server;
+    private EditText degree, doTime;
     private Switch directionSwitch;
     private long time= 0;
     private String directionText = "F";
@@ -59,15 +61,16 @@ public class Control extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked)
                         directionText = "F";
-                    directionText = "B";
+                    else
+                        directionText = "B";
                 }
             });
 
             apply.setOnClickListener(v -> {
-                String degreeText = (String) degree.getText();
-                String timeText = (String) doTime.getText();
+                String degreeText = degree.getText().toString();
+                String timeText = doTime.getText().toString();
 
-                if(!"".equals(degreeText)) {
+                if("".equals(degreeText)) {
                     Toast.makeText(getApplicationContext(), "degree를 입력하세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -77,12 +80,13 @@ public class Control extends AppCompatActivity {
                     return;
                 }
 
-                if(!"".equals(timeText)) {
+                if("".equals(timeText)) {
                     Toast.makeText(getApplicationContext(), "time을 입력하세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                c.PushMsg(degreeText + " " + timeText + " " + directionText);
+                String pushText = degreeText + " " + timeText + " " + directionText;
+                c.PushMsg(pushText);
             });
         }else{
             net.setText("Network: OFF");
@@ -107,6 +111,7 @@ public class Control extends AppCompatActivity {
         server = findViewById(R.id.event_server);
         degree = findViewById(R.id.degree);
         doTime = findViewById(R.id.doTime);
+        directionSwitch = findViewById(R.id.foward_backward);
 
         option.setOnClickListener(v -> {
             Intent in = new Intent(getApplicationContext(), Option.class);

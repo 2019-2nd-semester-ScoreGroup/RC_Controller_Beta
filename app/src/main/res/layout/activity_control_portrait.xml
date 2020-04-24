@@ -7,31 +7,37 @@
     tools:context=".Control">
 
     <Switch
-        android:id="@+id/foward_backward2"
+        android:id="@+id/foward_backward"
         android:layout_width="127dp"
         android:layout_height="59dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="154dp"
         android:text="foward"
         android:textAlignment="textStart"
-        tools:layout_editor_absoluteX="268dp"
-        tools:layout_editor_absoluteY="466dp" />
+        app:layout_constraintStart_toEndOf="@+id/doTime"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <TextView
+    <EditText
         android:id="@+id/degree"
         android:layout_width="115dp"
         android:layout_height="69dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="154dp"
         android:text="degree"
         android:textSize="30sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="466dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <TextView
+    <EditText
         android:id="@+id/doTime"
         android:layout_width="115dp"
         android:layout_height="69dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="154dp"
         android:text="time"
         android:textSize="30sp"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="466dp" />
+        app:layout_constraintStart_toEndOf="@+id/degree"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -137,8 +143,10 @@
         android:id="@+id/apply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="294dp"
+        android:layout_marginTop="73dp"
         android:text="적용"
-        tools:layout_editor_absoluteX="294dp"
-        tools:layout_editor_absoluteY="598dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/foward_backward" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
