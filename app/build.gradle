@@ -74,3 +74,8 @@ sceneform.asset('sampledata/Indicator/indicator.fbx',
         'default',
         'sampledata/Indicator/indicator.sfa',
         'src/main/assets/indicator')
+
+sceneform.asset('sampledata/newstr/new_start.fbx',
+        'default',
+        'sampledata/newstr/new_start.sfa',
+        'src/main/assets/new_start')

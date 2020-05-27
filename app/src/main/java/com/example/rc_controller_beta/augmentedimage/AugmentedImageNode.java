@@ -22,7 +22,6 @@ import android.util.Log;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
-import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import java.util.concurrent.CompletableFuture;
 
@@ -32,24 +31,23 @@ import java.util.concurrent.CompletableFuture;
  */
 @SuppressWarnings({"AndroidApiChecker"})
 public class AugmentedImageNode extends AnchorNode {
+    private static final String TAG = "AugmentedImageNode";
 
-  private static final String TAG = "AugmentedImageNode";
+    // The augmented image represented by this node.
+    private AugmentedImage image;
+    private Node RCnode;
 
-  // The augmented image represented by this node.
-  private AugmentedImage image;
-  private Node RCnode;
+    // Models of the 4 corners.  We use completable futures here to simplify
+    // the error handling and asynchronous loading.  The loading is started with the
+    // first construction of an instance, and then used when the image is set.
+    private static CompletableFuture<ModelRenderable> RCindicator;
 
-  // Models of the 4 corners.  We use completable futures here to simplify
-  // the error handling and asynchronous loading.  The loading is started with the
-  // first construction of an instance, and then used when the image is set.
-  private static CompletableFuture<ModelRenderable> RCindicator;
-
-  public AugmentedImageNode(Context context) {
-    // Upon construction, start loading the models for the corners of the frame.
-    RCindicator =
-            ModelRenderable.builder()
-                    .setSource(context, Uri.parse("start.sfb"))
-                    .build();
+    public AugmentedImageNode(Context context) {
+        // Upon construction, start loading the models for the corners of the frame.
+        RCindicator =
+                ModelRenderable.builder()
+                        .setSource(context, Uri.parse("new_start.sfb"))
+                        .build();
   }
 
   /**
@@ -60,25 +58,27 @@ public class AugmentedImageNode extends AnchorNode {
    */
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
   public void setImage(AugmentedImage image) {
-    this.image = image;
+      this.image = image;
 
-    // If any of the models are not loaded, then recurse when all are loaded.
-    if (!RCindicator.isDone()) {
-      CompletableFuture.allOf(RCindicator)
-              .thenAccept((Void aVoid) -> setImage(image))
-              .exceptionally(
-                      throwable -> {
-                        Log.e(TAG, "Exception loading", throwable);
-                        return null;
-                      });
-    }
+      // If any of the models are not loaded, then recurse when all are loaded.
+      if (!RCindicator.isDone()) {
+          CompletableFuture.allOf(RCindicator)
+                  .thenAccept((Void aVoid) -> setImage(image))
+                  .exceptionally(
+                          throwable -> {
+                              Log.e(TAG, "Exception loading", throwable);
+                              return null;
+                          });
+      }
 
-    // Set the anchor based on the center of the image.
-    setAnchor(image.createAnchor(image.getCenterPose()));
+      // Set the anchor based on the center of the image.
+      setAnchor(image.createAnchor(image.getCenterPose()));
 
-    RCnode = new Node();
-    RCnode.setParent(this);
-    RCnode.setRenderable(RCindicator.getNow(null));
+      // center position
+      RCnode = new Node();
+      RCnode.setParent(this);
+      RCnode.setWorldRotation(getWorldRotation());
+      RCnode.setRenderable(RCindicator.getNow(null));
   }
 
   public AugmentedImage getImage() {
