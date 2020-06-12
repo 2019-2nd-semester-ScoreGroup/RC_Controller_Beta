@@ -15,13 +15,13 @@
  * - 단순 표시 ----------------------------> 완료
  * - 지점 선택 ----------------------------> 완료
  * - 단순 거리 계산 -----------------------> 완료
- * 4월 중) rc, qr 인식 및 거리와 방향 계산
+ * 5월 중) rc, qr 인식 및 거리와 방향 계산
  * - qr 코드 인식 -------------------------> 완료
  * - rc와 qr 거리(미터) 계산 --------------> 완료
- * - rc와 qr 방향각 계산 ------------------> 완료
- * 5월 초)
+ * 6월 초)
+ * - rc와 qr 방향각 계산 ------------------> 수정중...
  * - rc와 앱 연동 -------------------------> 예정
- * 5월 말)
+ * 6월 중)
  * - 디버깅 -------------------------------> 계속
  */
 
@@ -76,7 +76,7 @@ public class ARcon extends AppCompatActivity {
     private ModelRenderable Destination_ModelRenderable;
     private TransformableNode Destination_TransformableNode;
     private AnchorNode Destination_AnchorNode;
-    private AugmentedImageNode RClocationNode;
+    private AugmentedImageNode RClocationNode = null;
     private long backKeyPressedTime = 0;
     private Toast toast;
 
@@ -97,6 +97,12 @@ public class ARcon extends AppCompatActivity {
         if (augmentedImageMap.isEmpty()) {
             fixbox.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
     }
 
     @Override
@@ -130,18 +136,22 @@ public class ARcon extends AppCompatActivity {
         // 초기화 버튼 리스너
         reset.setOnClickListener(v -> {
             Toast.makeText(getApplicationContext(), "reset", Toast.LENGTH_SHORT).show();
-            go.setVisibility(View.INVISIBLE);
-            reset.setVisibility(View.INVISIBLE);
-            txtDistance.setText("RC를 인식하세요");
-            augmentedImageMap.clear();
-            if(RClocationNode != null){
-                arFragment.getArSceneView().getScene().removeChild(RClocationNode);
-                RClocationNode = null;
-            }
-            if(Destination_AnchorNode != null){
-                arFragment.getArSceneView().getScene().removeChild(Destination_AnchorNode);
-                Destination_AnchorNode = null;
-            }
+            Intent intent = new Intent(ARcon.this,ARcon.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+//            go.setVisibility(View.INVISIBLE);
+//            reset.setVisibility(View.INVISIBLE);
+//            txtDistance.setText("RC를 인식하세요");
+//            augmentedImageMap.clear();
+//            if(RClocationNode != null){
+//                arFragment.getArSceneView().getScene().removeChild(RClocationNode);
+//                RClocationNode = null;
+//            }
+//            if(Destination_AnchorNode != null){
+//                arFragment.getArSceneView().getScene().removeChild(Destination_AnchorNode);
+//                Destination_AnchorNode = null;
+//            }
         });
 
         // 목적지 모델 렌더블 빌더
@@ -231,7 +241,7 @@ public class ARcon extends AppCompatActivity {
 
                     // Create a new anchor for newly found images.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
-                        Log.e("trackingJu", " if (!augmentedImageMap.containsKey(augmentedImage))");
+                        Log.e("trackingNew", " if (!augmentedImageMap.containsKey(augmentedImage))");
                         RClocationNode = new AugmentedImageNode(this);
                         RClocationNode.setImage(augmentedImage);
                         augmentedImageMap.put(augmentedImage, RClocationNode);
@@ -270,7 +280,7 @@ public class ARcon extends AppCompatActivity {
     }
 
     // 거리 표시
-    private void setDistance(Vector3 from, Vector3 to){
+    private void setDistance(Vector3 from, Vector3 to) {
         float d = getDistanceMeters(from, to);
         txtDistance.setText("목적지까지\n" + String.format("%.2f", d) + "m");
     }
@@ -290,7 +300,7 @@ public class ARcon extends AppCompatActivity {
     }
 
     // 각도 계산
-    private float getRotate(Vector3 from, Vector3 to){
+    private float getRotate(Vector3 from, Vector3 to) {
         float dz = from.z - to.z;
         float dx = from.x - to.x;
         return (float) Math.toDegrees(Math.atan2(dz, dx));
