@@ -6,7 +6,7 @@
  * - RC 인식 후 목적지 설정 가능
  * - QR 코드 인식 시 "RC를 인식중입니다..." 문구가 길어질 시
  * - 카메라를 살짝 멀리 했다가 가까이하면서 각도도 조금 다르게 해보면 됨
- * - go 버튼은 RC랑 연동하면서 구현할 것이고 말 그대로 버튼 클릭 시 RC 출발
+ * - go 버튼은 RC랑 연동하면서 구현할 예정 현재 목적지 상대 좌표 표시
  * - reset 버튼은 화면상 3D 마커를 지우는 건데 보완중
  * - 기타 사항 카톡 문의
  *
@@ -19,7 +19,8 @@
  * - qr 코드 인식 -------------------------> 완료
  * - rc와 qr 거리(미터) 계산 --------------> 완료
  * 6월 초)
- * - rc와 qr 방향각 계산 ------------------> 수정중...
+ * - rc와 qr 방향각 계산 ------------------> 취소
+ * - 차량기준 목적지 상대 좌표 표시 -------> 완료
  * - rc와 앱 연동 -------------------------> 예정
  * 6월 중)
  * - 디버깅 -------------------------------> 계속
@@ -130,7 +131,9 @@ public class ARcon extends AppCompatActivity {
 
         // 이동 버튼 리스너
         go.setOnClickListener(v -> {
-            Toast.makeText(getApplicationContext(), "go", Toast.LENGTH_SHORT).show();
+            Vector3 Des = RClocationNode.worldToLocalPoint(Destination_AnchorNode.getWorldPosition());
+            Toast.makeText(getApplicationContext(), Des.toString(), Toast.LENGTH_LONG).show();
+            Log.e("Localpoint", Des.toString());
         });
 
         // 초기화 버튼 리스너
@@ -179,8 +182,8 @@ public class ARcon extends AppCompatActivity {
                     Log.e("ju an2", Destination_AnchorNode.getWorldPosition().toString());
                     // 거리 계산
                     setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
-                    // 각도 계산
-                    setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
+//                    // 각도 계산
+//                    setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
                     break;
                 }
                 default:
@@ -275,14 +278,14 @@ public class ARcon extends AppCompatActivity {
         Destination_TransformableNode.select();
         // 거리 계산
         setDistance(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
-        // 각도 계산
-        setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
+//        // 각도 계산
+//        setRotate(RClocationNode.getWorldPosition(), Destination_AnchorNode.getWorldPosition());
     }
 
     // 거리 표시
     private void setDistance(Vector3 from, Vector3 to) {
         float d = getDistanceMeters(from, to);
-        txtDistance.setText("목적지까지\n" + String.format("%.2f", d) + "m");
+        txtDistance.setText("목적지까지 약 " + String.format("%.2f", d) + "m");
     }
 
     // 거리 계산
@@ -291,19 +294,6 @@ public class ARcon extends AppCompatActivity {
         float distanceY = from.y - to.y;
         float distanceZ = from.z - to.z;
         return (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ);
-    }
-
-    // 각도 표시
-    private void setRotate(Vector3 from, Vector3 to) {
-        float rotate = getRotate(from, to);
-        txtDistance.setText(txtDistance.getText().toString() + "/" + String.format("%.2f", rotate) + "°");
-    }
-
-    // 각도 계산
-    private float getRotate(Vector3 from, Vector3 to) {
-        float dz = from.z - to.z;
-        float dx = from.x - to.x;
-        return (float) Math.toDegrees(Math.atan2(dz, dx));
     }
 
     // 뒤로가기 종료
@@ -327,6 +317,19 @@ public class ARcon extends AppCompatActivity {
         }
     }
 }
+
+//    // 각도 표시
+//    private void setRotate(Vector3 from, Vector3 to) {
+//        float rotate = getRotate(from, to);
+//        txtDistance.setText(txtDistance.getText().toString() + "/" + String.format("%.2f", rotate) + "°");
+//    }
+//
+//    // 각도 계산
+//    private float getRotate(Vector3 from, Vector3 to) {
+//        float dz = from.z - to.z;
+//        float dx = from.x - to.x;
+//        return (float) Math.toDegrees(Math.atan2(dz, dx));
+//    }
 
 /**rc카 모델 렌더블 빌더*/
 //        ModelRenderable.builder()
