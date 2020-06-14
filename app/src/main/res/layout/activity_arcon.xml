@@ -62,7 +62,7 @@
 
     <ImageView
         android:id="@+id/fitbox_img"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/ux_fragment"
         app:layout_constraintEnd_toEndOf="@+id/ux_fragment"
@@ -80,7 +80,7 @@
         android:layout_marginBottom="32dp"
         android:background="@drawable/textbox"
         android:gravity="center"
-        android:text="RC를 인식하세요"
+        android:text="QR코드를 인식하세요"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/ux_fragment"

@@ -117,9 +117,6 @@ public class ARcon extends AppCompatActivity {
         fixbox = findViewById(R.id.fitbox_img);
         txtDistance = findViewById(R.id.txtDistance);
 
-        go.setVisibility(View.INVISIBLE);
-        reset.setVisibility(View.INVISIBLE);
-
         // rc 인식 리스너
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
 
@@ -131,6 +128,10 @@ public class ARcon extends AppCompatActivity {
 
         // 이동 버튼 리스너
         go.setOnClickListener(v -> {
+            if(Destination_AnchorNode == null){
+                Toast.makeText(getApplicationContext(), "목적지가 없습니다!", Toast.LENGTH_LONG).show();
+                return;
+            }
             Vector3 Des = RClocationNode.worldToLocalPoint(Destination_AnchorNode.getWorldPosition());
             Toast.makeText(getApplicationContext(), Des.toString(), Toast.LENGTH_LONG).show();
             Log.e("Localpoint", Des.toString());
@@ -224,7 +225,7 @@ public class ARcon extends AppCompatActivity {
                     Log.e("trackingJu", "PAUSED");
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
-                    txtDistance.setText("RC를 인식중입니다...");
+                    txtDistance.setText("QR을 인식중입니다...");
 
 //                    String text = "RC를 인식중입니다...";
 //                    SnackbarHelper.getInstance().showMessage(this, text);
@@ -233,10 +234,8 @@ public class ARcon extends AppCompatActivity {
                 case TRACKING:
                     Log.e("trackingJu", "TRACKING");
                     if(augmentedImageMap.isEmpty()){
-                        Toast.makeText(getApplicationContext(), "RC 인식", Toast.LENGTH_SHORT).show();
-                        txtDistance.setText("목적지를 인식하세요");
-                        go.setVisibility(View.VISIBLE);
-                        reset.setVisibility(View.VISIBLE);
+                        Toast.makeText(getApplicationContext(), "인식 완료!", Toast.LENGTH_SHORT).show();
+                        txtDistance.setText("목적지를 설정하세요");
                     }
 
                     // Have to switch to UI Thread to update View.
