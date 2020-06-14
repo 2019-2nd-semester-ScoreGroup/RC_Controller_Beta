@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RC Controller</string>
+    <string name="app_name">AR Controller</string>
     <string name="title_activity_option">Option</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
