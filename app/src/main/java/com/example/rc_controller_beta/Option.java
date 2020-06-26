@@ -12,11 +12,10 @@ import android.widget.Toast;
 
 public class Option extends AppCompatActivity {
     Client c = Client.getInstance();
-    private Button b1, b2;
+    private Button b1;
     private EditText ip, port;
     private TextView v1, v2;
     private String IP = "", PORT = "";
-    private static boolean connect = false;
 
     /**쉐얼드 프리퍼런스 아이피, 패스워드 저장*/
     private void SaveIPPW(String ip, String port){
@@ -33,18 +32,6 @@ public class Option extends AppCompatActivity {
         IP = pref.getString("IP", "localhost");
         PORT = pref.getString("PORT", "8080");
         set_ipport();
-    }
-
-    public static boolean get_connect(){
-        return connect;
-    }
-
-    public static void connect_true(){
-        connect = true;
-    }
-
-    public static void connect_false(){
-        connect = false;
     }
 
     private void set_ipport(){
@@ -65,7 +52,6 @@ public class Option extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_option);
         b1 = findViewById(R.id.ipport_button);
-        b2 = findViewById(R.id.developer_button);
         ip = findViewById(R.id.ip_edit);
         port = findViewById(R.id.port_edit);
         v1 = findViewById(R.id.ip_view);
@@ -80,17 +66,7 @@ public class Option extends AppCompatActivity {
                 set_ipport();
                 SaveIPPW(IP, PORT);
             }
-            c.connection(IP, Integer.parseInt((PORT)));
-        });
-
-        b2.setOnClickListener(v -> {
-            if(connect == false){
-                connect = true;
-                Toast.makeText(getApplicationContext(), "Connection = ON", Toast.LENGTH_SHORT).show();
-            }else{
-                connect = false;
-                Toast.makeText(getApplicationContext(), "Connection = OFF", Toast.LENGTH_SHORT).show();
-            }
+            c.connection(IP, Integer.parseInt((PORT)), this);
         });
     }
 }

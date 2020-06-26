@@ -31,6 +31,7 @@ package com.example.rc_controller_beta;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -70,8 +71,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ARcon extends AppCompatActivity {
+    Client c = Client.getInstance();
     private ArFragment arFragment;
-    private ImageButton option, go, reset;
+    private ImageButton option, go, reset, wifi;
     private ImageView fixbox;
     private TextView txtDistance;
     private ModelRenderable Destination_ModelRenderable;
@@ -114,6 +116,7 @@ public class ARcon extends AppCompatActivity {
         option = findViewById(R.id.option_button);
         go = findViewById(R.id.go_button);
         reset = findViewById(R.id.reset_button);
+        wifi = findViewById(R.id.wifi_button);
         fixbox = findViewById(R.id.fitbox_img);
         txtDistance = findViewById(R.id.txtDistance);
 
@@ -128,12 +131,17 @@ public class ARcon extends AppCompatActivity {
 
         // 이동 버튼 리스너
         go.setOnClickListener(v -> {
+            if(c.connect == false){
+                Toast.makeText(getApplicationContext(), "RC와 통신 상태를 확인하세요", Toast.LENGTH_LONG).show();
+                return;
+            }
             if(Destination_AnchorNode == null){
                 Toast.makeText(getApplicationContext(), "목적지가 없습니다!", Toast.LENGTH_LONG).show();
                 return;
             }
             Vector3 Des = RClocationNode.worldToLocalPoint(Destination_AnchorNode.getWorldPosition());
             Toast.makeText(getApplicationContext(), Des.toString(), Toast.LENGTH_LONG).show();
+            c.PushMsg(Des.toString());
             Log.e("Localpoint", Des.toString());
         });
 
@@ -144,18 +152,29 @@ public class ARcon extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(0, 0);
             finish();
-//            go.setVisibility(View.INVISIBLE);
-//            reset.setVisibility(View.INVISIBLE);
-//            txtDistance.setText("RC를 인식하세요");
-//            augmentedImageMap.clear();
-//            if(RClocationNode != null){
-//                arFragment.getArSceneView().getScene().removeChild(RClocationNode);
-//                RClocationNode = null;
-//            }
-//            if(Destination_AnchorNode != null){
-//                arFragment.getArSceneView().getScene().removeChild(Destination_AnchorNode);
-//                Destination_AnchorNode = null;
-//            }
+        });
+
+        // 연결 버튼 리스너
+        wifi.setOnClickListener(v -> {
+            if(c.connect == true){
+                Toast.makeText(getApplicationContext(), "RC와 통신 성공", Toast.LENGTH_SHORT).show();
+                return;
+            }else if(c.connect == false){
+                SharedPreferences pref = getSharedPreferences("temp", MODE_PRIVATE);
+                String IP = pref.getString("IP", "localhost");
+                String PORT = pref.getString("PORT", "8080");
+                c.connection(IP, Integer.parseInt((PORT)), this);
+            }else {
+                Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 통신 이미지 변경 리스너
+        c.setOnReceiveListener((v)->{
+            if(v.getWIFI() == true)
+                wifi.setImageResource(R.drawable.on);
+            else
+                wifi.setImageResource(R.drawable.off);
         });
 
         // 목적지 모델 렌더블 빌더

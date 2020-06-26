@@ -1,6 +1,10 @@
 package com.example.rc_controller_beta;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,10 +17,12 @@ import java.net.Socket;
 
 public class Client {
     private static Client c;
+    private RL callback;
     private Socket sock = null;
     private BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
     private PrintWriter out = null;            //서버로 내보내기 위한 출력 스트림
     private String line = null;
+    public boolean connect = false;
 
     private Client(){}
 
@@ -26,7 +32,16 @@ public class Client {
         return c;
     }
 
-    public void connection(String IP, int PORT){
+    public Client setOnReceiveListener(RL callback) {
+        this.callback = callback;
+        return this;
+    }
+
+    public boolean getWIFI(){
+        return connect;
+    }
+
+    public void connection(String IP, int PORT, Context context){
         new Thread(()->{
             try {
                 InetSocketAddress sock_address = new InetSocketAddress(IP, PORT);
@@ -35,10 +50,16 @@ public class Client {
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())));
                 ReadThread();
-                Option.connect_true();
+                connect = true;
+                callback.onReceive(this);
+                Handler mHandler = new Handler(Looper.getMainLooper());
+                mHandler.post(()-> Toast.makeText(context, "RC와 통신 성공", Toast.LENGTH_SHORT).show());
             } catch (IOException e) {
                 sock = null;
-                Option.connect_false();
+                connect = false;
+                callback.onReceive(this);
+                Handler mHandler = new Handler(Looper.getMainLooper());
+                mHandler.post(()-> Toast.makeText(context, "RC와 통신 실패", Toast.LENGTH_SHORT).show());
                 Log.i("ju", e.getLocalizedMessage());
             }
         }).start();
@@ -65,8 +86,11 @@ public class Client {
                         Log.i("ju", line);
                         if(line.equals("C"))
                             PushMsg("C");
+                        if(line == null)
+                            CloseSock();
                     } catch (IOException e) {
                         Log.i("ju", e.getLocalizedMessage());
+                        CloseSock();
                         break;
                     }
                 }
@@ -74,18 +98,12 @@ public class Client {
         }).start();
     }
 
-    public boolean SockLife(){
-        if(sock == null || sock.isClosed())
-            return true;
-        else
-            return false;
-    }
-
     public void CloseSock(){
         new Thread(()->{
             try {
-                Option.connect_false();
+                connect = false;
                 sock.close();
+                sock = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
