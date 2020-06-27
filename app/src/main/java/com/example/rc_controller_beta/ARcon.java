@@ -330,6 +330,8 @@ public class ARcon extends AppCompatActivity {
         // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지나지 않았으면 종료
         // 현재 표시된 Toast 취소
         if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            c.PushMsg("E");
+            c.CloseSock();
             finish();
             toast.cancel();
         }

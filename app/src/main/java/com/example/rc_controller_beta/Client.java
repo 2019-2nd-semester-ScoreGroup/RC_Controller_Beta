@@ -22,6 +22,7 @@ public class Client {
     private BufferedReader in = null;        //Server로부터 데이터를 읽어들이기 위한 입력스트림
     private PrintWriter out = null;            //서버로 내보내기 위한 출력 스트림
     private String line = null;
+    private Context context;
     public boolean connect = false;
 
     private Client(){}
@@ -42,6 +43,7 @@ public class Client {
     }
 
     public void connection(String IP, int PORT, Context context){
+        this.context = context;
         new Thread(()->{
             try {
                 InetSocketAddress sock_address = new InetSocketAddress(IP, PORT);
@@ -67,8 +69,10 @@ public class Client {
 
     public void PushMsg(String msg){
         new Thread(()->{
-            if(sock == null || sock.isClosed())
+            if(!sock.isConnected() || sock.isClosed()){
+                CloseSock();
                 return;
+            }
             out.println(msg);                        //서버로 데이터 전송
             out.flush();
         }).start();
@@ -78,8 +82,10 @@ public class Client {
     public void ReadThread(){
         new Thread(()->{
             while(true){
-                if(sock == null || sock.isClosed())
-                    break;
+                if(!sock.isConnected() || sock.isClosed()){
+                    CloseSock();
+                    return;
+                }
                 else{
                     try {
                         line = in.readLine();                //Client로부터 데이터를 읽어옴
@@ -104,6 +110,9 @@ public class Client {
                 connect = false;
                 sock.close();
                 sock = null;
+                callback.onReceive(this);
+                Handler mHandler = new Handler(Looper.getMainLooper());
+                mHandler.post(()-> Toast.makeText(context, "RC와 통신이 해제되었습니다", Toast.LENGTH_SHORT).show());
             } catch (IOException e) {
                 e.printStackTrace();
             }
